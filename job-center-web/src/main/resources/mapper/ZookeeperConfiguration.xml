@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lianshang.job.center.web.mapper.ZookeeperConfigurationMapper">
+  <resultMap id="BaseResultMap" type="com.lianshang.job.center.web.entity.ZookeeperConfiguration">
+    <id column="id" property="id"/>
+    <result property="serverLists" column="server_lists"/>
+    <result property="nameSpace" column="name_space"/>
+    <result property="baseSleepTimeMilliseconds" column="base_sleep_timeMilliseconds"/>
+    <result property="connectionTimeoutMilliSeconds" column="connection_timeout_milli_seconds"/>
+    <result property="maxRetries" column="max_retries"/>
+    <result property="maxSleepTimeMilliseconds" column="max_sleep_timeMilliseconds"/>
+    <result property="sessionTimeoutMilliseconds" column="session_timeoutMilliseconds"/>
+    <result property="createTime" column="create_time" javaType="java.util.Date"/>
+    <result property="updateTime" column="update_time" javaType="java.util.Date"/>
+    <result property="digest" column="digest"/>
+    <result property="validity" column="validity"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+        id,server_lists,name_space,base_sleep_timeMilliseconds,connection_timeout_milli_seconds,
+        max_retries,max_sleep_timeMilliseconds,session_timeoutMilliseconds,create_time,update_time,validity
+    </sql>
+
+
+  <!-- 添加记录-->
+  <insert id="insert" parameterType="com.lianshang.job.center.web.entity.ZookeeperConfiguration">
+    INSERT INTO zookeeper_configuration (
+      server_lists,
+      name_space,
+      base_sleep_timeMilliseconds,
+      connection_timeout_milli_seconds,
+      max_retries,
+      max_sleep_timeMilliseconds,
+      session_timeoutMilliseconds,
+      digest
+    )
+    VALUES
+      (
+      #{serverLists},
+      #{nameSpace},
+      #{baseSleepTimeMilliseconds},
+      #{connectionTimeoutMilliSeconds},
+      #{maxRetries},
+      #{maxSleepTimeMilliseconds},
+      #{sessionTimeoutMilliseconds},
+      #{digest}
+      )
+  </insert>
+
+  <!-- 根据id查询对象-->
+  <select id="getById" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM zookeeper_configuration WHERE id = #{id} and validity = 1
+  </select>
+  <!-- 根据名称查询空间-->
+  <select id="getByName" parameterType="string" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM zookeeper_configuration WHERE name_space = #{namespace} and validity = 1
+
+  </select>
+  <!-- 获取默认空间-->
+  <select id="getDefault" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM zookeeper_configuration WHERE validity = 1 ORDER BY id asc limit 1
+  </select>
+</mapper>

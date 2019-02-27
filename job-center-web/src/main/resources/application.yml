@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: pay2-center
+  datasource:
+    url: jdbc:mysql://rm-uf6kqb5wq9xzjw0asjo.mysql.rds.aliyuncs.com:3306/job?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
+    username: chisong
+    password: csz123$%
+    driverClassName: com.mysql.cj.jdbc.Driver
+
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+server:
+  port: 8080
+
+mybatis:
+  mapperLocations: classpath*:mapper/*.xml
