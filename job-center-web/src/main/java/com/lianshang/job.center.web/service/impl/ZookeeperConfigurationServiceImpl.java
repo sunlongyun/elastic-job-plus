@@ -22,12 +22,14 @@ public class ZookeeperConfigurationServiceImpl implements ZookeeperConfiguration
 
 	@Override
 	public void save(ZookeeperConfigurationDto zookeeperConfigurationDto) {
+
 		if(null == zookeeperConfigurationDto) {
 			throw new RuntimeException("zookeeperConfigurationDto不能为空");
 		}
+
 		ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration();
 		BeanUtils.copyProperties(zookeeperConfigurationDto, zookeeperConfiguration);
-		int r = zookeeperConfigurationMapper.insert(zookeeperConfiguration);
+		zookeeperConfigurationMapper.insert(zookeeperConfiguration);
 	}
 
 	@Override

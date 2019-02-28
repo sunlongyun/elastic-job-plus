@@ -1,6 +1,7 @@
 package com.lianshang.job.center.web;
 
 import com.lianshang.job.center.web.dto.ZookeeperConfigurationDto;
+import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.ZookeeperConfigurationService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -22,7 +23,8 @@ public class JobCenterWebApplicationTest {
 
 	@Autowired
 	private ZookeeperConfigurationService zookeeperConfigurationService;
-
+	@Autowired
+	private JobCoreConfigurationService jobCoreConfigurationService;
 	@Test
 	public void test1() {
 		ZookeeperConfigurationDto zookeeperConfigurationDto = new ZookeeperConfigurationDto();
@@ -36,5 +38,10 @@ public class JobCenterWebApplicationTest {
 	public void test2() {
 		ZookeeperConfigurationDto zookeeperConfigurationDto = zookeeperConfigurationService.getDefault();
 		log.info("zookeeperConfigurationDto=={}", zookeeperConfigurationDto);
+	}
+
+	@Test
+	public void test3(){
+		jobCoreConfigurationService.getAllList().forEach(System.out::println);
 	}
 }

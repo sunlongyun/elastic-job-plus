@@ -1,7 +1,11 @@
 package com.lianshang.job.center.web.dto;
 
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import java.util.Date;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 /**
  * 描述:
@@ -77,5 +81,24 @@ public class ZookeeperConfigurationDto {
 			", updateTime=" + updateTime +
 			", validity=" + validity +
 			'}';
+	}
+
+	/**
+	 * 获取当当的空间配置
+	 */
+	public ZookeeperConfiguration getDangDangConfiguration() {
+		ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(serverLists, nameSpace);
+		BeanUtils.copyProperties(this, zookeeperConfiguration);
+		return zookeeperConfiguration;
+	}
+
+	/**
+	 * 获取注册中心
+	 * @return
+	 */
+	public CoordinatorRegistryCenter getCoordinatorRegistryCenter(){
+		CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(getDangDangConfiguration());
+		regCenter.init();
+		return regCenter;
 	}
 }

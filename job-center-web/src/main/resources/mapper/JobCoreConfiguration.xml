@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lianshang.job.center.web.mapper.JobCoreConfigurationMapper">
+
+  <resultMap id="BaseResultMap" type="com.lianshang.job.center.web.entity.JobCoreConfiguration">
+    <id column="id" property="id"/>
+    <result property="jobName" column="job_name"/>
+    <result property="cron" column="cron"/>
+    <result property="shardingTotalCount" column="sharding_total_count"/>
+    <result property="shardingItemParameters" column="sharding_item_parameters"/>
+    <result property="jobParameter" column="job_parameter"/>
+    <result property="jobType" column="job_type"/>
+    <result property="failover" column="failover"/>
+    <result property="misfire" column="misfire"/>
+    <result property="applicationName" column="application_name"/>
+    <result property="createTime" column="create_time" javaType="java.util.Date"/>
+    <result property="updateTime" column="update_time" javaType="java.util.Date"/>
+    <result property="description" column="description"/>
+    <result property="validity" column="validity"/>
+  </resultMap>
+
+
+  <sql id="Base_Column_List">
+    id,job_name,cron,sharding_total_count,sharding_item_parameters,job_parameter,job_type,`failover`,`misfire`,
+    application_name,create_time,update_time,validity
+  </sql>
+
+  <!-- 添加任务-->
+  <insert id="insert" parameterType="com.lianshang.job.center.web.entity.JobCoreConfiguration">
+    INSERT INTO job_core_configuration (
+      job_name,
+      cron,
+      sharding_total_count,
+      sharding_item_parameters,
+      job_parameter,
+      job_type,
+      failover,
+      misfire,
+      application_name
+    )
+    VALUES
+      (
+        #{jobName},
+        #{cron},
+        #{shardingTotalCount},
+        #{shardingItemParameters},
+        #{jobParameter},
+        #{jobType},
+        #{failover},
+        #{misfire},
+        #{applicationName}
+      )
+  </insert>
+
+  <!-- 刷新任务配置-->
+  <update id="update" parameterType="com.lianshang.job.center.web.entity.JobCoreConfiguration">
+    update job_core_configuration
+    <trim prefix="set" suffixOverrides=",">
+      <if test="jobName != null">
+        job_name = #{jobName},
+      </if>
+      <if test="cron != null">
+        cron = #{cron},
+      </if>
+      <if test="shardingTotalCount != null">
+        sharding_total_count = #{shardingTotalCount},
+      </if>
+      <if test="shardingItemParameters != null">
+        sharding_item_parameters = #{shardingItemParameters},
+      </if>
+      <if test="jobParameter != null">
+        job_parameter = #{jobParameter},
+      </if>
+      <if test="failover != null">
+        failover = #{failover},
+      </if>
+      <if test="misfire != null">
+        misfire = #{misfire},
+      </if>
+      <if test="applicationName != null">
+        application_name = #{applicationName},
+      </if>
+      <if test="validity != null">
+        validity = #{validity},
+      </if>
+    </trim>
+    where id = #{id}
+  </update>
+
+  <!-- 根据id查询-->
+  <select id="getById" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM job_core_configuration
+    WHERE id = #{id} and validity = 1
+  </select>
+
+  <!-- 根据名称查询-->
+  <select id="getByName" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM job_core_configuration
+    WHERE job_name = #{jobName} and application_name = #{applicationName} and validity = 1
+  </select>
+
+  <!-- 基于所有有效的job列表-->
+  <select id="getAllList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM job_core_configuration
+    WHERE validity = 1
+    ORDER BY id asc
+  </select>
+</mapper>
