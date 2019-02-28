@@ -20,6 +20,10 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <redis.util.version>0.0.1</redis.util.version>
     <druid.version>1.1.10</druid.version>
+    <mybatis-spring-boot-starter.version>2.0.0</mybatis-spring-boot-starter.version>
+    <cglib.verion>3.2.10</cglib.verion>
+    <elastic.job.version>2.1.5</elastic.job.version>
+    <mysql-connector.version>8.0.15</mysql-connector.version>
   </properties>
 
   <dependencies>
@@ -52,28 +56,73 @@
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.0.0</version>
+      <version>${mybatis-spring-boot-starter.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/cglib/cglib -->
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
-      <version>3.2.10</version>
+      <version>${cglib.verion}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.dangdang/elastic-job-lite-core -->
     <dependency>
       <groupId>com.dangdang</groupId>
       <artifactId>elastic-job-lite-core</artifactId>
-      <version>2.1.5</version>
+      <version>${elastic.job.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>curator-client</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>curator-framework</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>curator-recipes</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+      <artifactId>curator-client</artifactId>
+      <groupId>org.apache.curator</groupId>
+      <version>2.10.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-framework -->
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+      <version>2.10.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+      <version>2.10.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>curator-framework</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
+    <!-- https://mvnrepocuspringcusitory.com/artifact/mysql/mysql-connector-java -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.15</version>
+      <version>${mysql-connector.version}</version>
     </dependency>
 
   </dependencies>

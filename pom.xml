@@ -24,6 +24,7 @@
     <common-starter.version>0.0.2</common-starter.version>
     <applo-starter.version>0.0.1</applo-starter.version>
     <lombok.version>1.16.22</lombok.version>
+    <springframework.cloud.version>Finchley.SR1</springframework.cloud.version>
   </properties>
 
   <modules>
@@ -40,6 +41,14 @@
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <version>${lombok.version}</version>
+      </dependency>
+
+     <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${springframework.cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
     </dependencies>

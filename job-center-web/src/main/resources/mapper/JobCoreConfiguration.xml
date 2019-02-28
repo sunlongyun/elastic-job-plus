@@ -22,7 +22,7 @@
 
   <sql id="Base_Column_List">
     id,job_name,cron,sharding_total_count,sharding_item_parameters,job_parameter,job_type,`failover`,`misfire`,
-    application_name,create_time,update_time,validity
+    application_name,create_time,update_time,description,validity
   </sql>
 
   <!-- 添加任务-->

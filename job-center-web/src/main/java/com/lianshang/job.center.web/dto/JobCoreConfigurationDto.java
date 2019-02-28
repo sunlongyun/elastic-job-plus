@@ -1,6 +1,7 @@
 package com.lianshang.job.center.web.dto;
 
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 描述:
@@ -8,6 +9,7 @@ import java.util.Date;
  * @AUTHOR 孙龙云
  * @date 2019-02-28 上午11:06
  */
+@Data
 public class JobCoreConfigurationDto {
 
 	/**
@@ -69,8 +71,8 @@ public class JobCoreConfigurationDto {
 
 	public static enum JobType{
 
-		SIMPLE_JOB("SimpleJob","简单作业类型"),
-		DATA_FLOW_JOB("DataflowJob","流式作业类型");
+		SIMPLE_JOB("simple_job","简单作业类型"),
+		DATA_FLOW_JOB("data_flow_job","流式作业类型");
 
 		private String code;
 		private String msg;

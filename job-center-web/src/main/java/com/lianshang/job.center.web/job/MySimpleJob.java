@@ -16,6 +16,16 @@ public class MySimpleJob implements SimpleJob{
 
 	@Override
 	public void execute(ShardingContext shardingContext) {
+		String jobName = shardingContext.getJobName();
+		String shardingParameter = shardingContext.getShardingParameter();
+		String jobParameter = shardingContext.getJobParameter();
+		int totalCount = shardingContext.getShardingTotalCount();
+		int item = shardingContext.getShardingItem();
 		log.info("发送请求---------{},thread:{}",new Date(),Thread.currentThread());
+		log.info("jobName=>{}", jobName);
+		log.info("shardingParameter=>{}", shardingParameter);
+		log.info("jobParameter=>{}", jobParameter);
+		log.info("totalCount=>{}", totalCount);
+		log.info("item=>{}", item);
 	}
 }

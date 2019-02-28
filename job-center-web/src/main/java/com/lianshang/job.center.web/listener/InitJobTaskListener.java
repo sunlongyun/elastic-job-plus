@@ -1,11 +1,10 @@
 package com.lianshang.job.center.web.listener;
 
-import com.dangdang.ddframe.job.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.JobScheduler;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.lianshang.job.center.web.job.MySimpleJob;
+import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
+import com.lianshang.job.center.web.dto.JobCoreConfigurationDto.JobType;
+import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.ZookeeperConfigurationService;
+import com.lianshang.job.center.web.util.JobUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -24,40 +23,29 @@ public class InitJobTaskListener implements ApplicationListener<ContextRefreshed
 
 	@Autowired
 	private ZookeeperConfigurationService zookeeperConfigurationService;
-
+	@Autowired
+	private JobCoreConfigurationService jobCoreConfigurationService;
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		if(event.getApplicationContext().getParent() == null) {
-
 			log.info("容器初始化完成--------");
 
-			int num =2;
-			for(int i=0;i<num;i++){
-				final String x = i+"";
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						initJob(x);
-					}
-				}).start();
-			}
+			jobCoreConfigurationService.getAllList().forEach(this::initJob);
 
 		}
 	}
 
 	/**
-	 * 初始化job
+	 * 实例化job
 	 */
-	private void initJob(String jobName){
-		// 定义作业核心配置
-		JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?",
-			1).build();
-		// 定义SIMPLE类型配置
-		SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig,
-			MySimpleJob.class.getCanonicalName());
-		// 定义Lite作业根配置
-		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
-		new JobScheduler(zookeeperConfigurationService.getDefault().getCoordinatorRegistryCenter(),
-			simpleJobRootConfig).init();
+	private void initJob(JobCoreConfigurationDto jobCoreConfigurationDto) {
+
+		if(JobType.SIMPLE_JOB.code().equals(jobCoreConfigurationDto.getJobType())) {
+			JobUtil.initSimpleJob(jobCoreConfigurationDto);
+		} else if(JobType.DATA_FLOW_JOB.code().equals(jobCoreConfigurationDto.getJobType())) {
+			JobUtil.initDataflowJob(jobCoreConfigurationDto);
+		}
+
 	}
+
 }
