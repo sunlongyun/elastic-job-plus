@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -113,12 +117,19 @@ public class MyDataFlowJob implements DataflowJob {
 			}
 		}
 
-		MultiValueMap<String, Object> requestEntity = new LinkedMultiValueMap<>();
-		requestEntity.add("shardInfo", shardInfo);
-		requestEntity.add("data", data);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, Object> map= new LinkedMultiValueMap<String, Object>();
+		map.add("jobName", jobName);
+		map.add("shardingTotalCount", shardInfo.getShardingTotalCount());
+		map.add("shardingParameter", shardInfo.getShardingParameter());
+		map.add("shardingItem", shardInfo.getShardingItem());
+		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+
 
 		ResponseEntity<LsCloudResponse> responseResponseEntity = restTemplate
-			.postForEntity(url, requestEntity, LsCloudResponse.class);
+			.postForEntity(url, request, LsCloudResponse.class);
 
 		log.info("jobName:{} 响应结果:{}", jobName, responseResponseEntity);
 	}
