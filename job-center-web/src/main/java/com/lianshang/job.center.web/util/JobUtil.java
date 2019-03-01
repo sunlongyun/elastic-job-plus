@@ -57,7 +57,7 @@ public class JobUtil implements ApplicationContextAware {
 	/**
 	 * 初始化DataflowJob
 	 */
-	public static void initDataflowJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
+	public static void initDataFlowJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 
 		String jobName = jobCoreConfigurationDto.getApplicationName() + "___" + jobCoreConfigurationDto.getJobName();
 
