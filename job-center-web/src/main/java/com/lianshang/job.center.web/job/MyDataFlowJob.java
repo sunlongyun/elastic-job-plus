@@ -2,15 +2,16 @@ package com.lianshang.job.center.web.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
+import com.lianshang.job.center.service.beans.ProcessDataInfo;
 import com.lianshang.job.center.service.beans.ShardInfo;
 import com.lianshang.job.center.service.response.LsCloudResponse;
 import com.lianshang.job.center.service.response.ResponseCodeEnum;
+import com.lianshang.job.center.service.utils.JsonUtils;
 import com.lianshang.job.center.web.config.RestTemplateConfigUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -44,8 +45,17 @@ public class MyDataFlowJob implements DataflowJob {
 
 		String url = "http://" + applicationName.toUpperCase() + "/task/dataFlow-fetchData";
 
-		MultiValueMap<String, Object> requestEntity = new LinkedMultiValueMap<>();
-		requestEntity.add("shardInfo", shardInfo);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+		map.add("jobName", jobName);
+		map.add("shardingTotalCount", shardInfo.getShardingTotalCount() + "");
+		map.add("shardingParameter", shardInfo.getShardingParameter());
+		map.add("shardingItem", shardInfo.getShardingItem() + "");
+		map.add("jobParameter", shardInfo.getJobParameter());
+
+		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+
 
 		if(restTemplate == null) {
 			synchronized(MySimpleJob.class) {
@@ -56,7 +66,7 @@ public class MyDataFlowJob implements DataflowJob {
 		}
 
 		ResponseEntity<LsCloudResponse> responseResponseEntity = restTemplate
-			.postForEntity(url, requestEntity, LsCloudResponse.class);
+			.postForEntity(url, request, LsCloudResponse.class);
 
 		log.info("jobName:{} 响应结果:{}", jobName, responseResponseEntity);
 		if(null != responseResponseEntity) {
@@ -117,15 +127,15 @@ public class MyDataFlowJob implements DataflowJob {
 			}
 		}
 
-
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		MultiValueMap<String, Object> map= new LinkedMultiValueMap<String, Object>();
-		map.add("jobName", jobName);
-		map.add("shardingTotalCount", shardInfo.getShardingTotalCount());
-		map.add("shardingParameter", shardInfo.getShardingParameter());
-		map.add("shardingItem", shardInfo.getShardingItem());
-		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		ProcessDataInfo processDataInfo = new ProcessDataInfo();
+		processDataInfo.setData(data);
+		processDataInfo.setShardInfo(shardInfo);
+		String paramJson = JsonUtils.object2JsonString(processDataInfo);
+		log.info("paramJson==>{}", paramJson);
+		HttpEntity<String> request = new HttpEntity<String>(paramJson, headers);
 
 
 		ResponseEntity<LsCloudResponse> responseResponseEntity = restTemplate

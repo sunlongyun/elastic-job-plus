@@ -1,5 +1,6 @@
 package com.lianshang.job.center.service.controller;
 
+import com.lianshang.job.center.service.beans.ProcessDataInfo;
 import com.lianshang.job.center.service.beans.ShardInfo;
 import com.lianshang.job.center.service.config.ClientJobTaskListener;
 import com.lianshang.job.center.service.jobTaskInterface.DataFlowJob;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,6 +58,7 @@ public class JobTaskController {
 	@RequestMapping("/dataFlow-fetchData")
 	public LsCloudResponse dataFlowFetchData(ShardInfo shardInfo) {
 
+
 		Optional<DataFlowJob> dataFlowJobOptional = ClientJobTaskListener.dataFlowJobMap.entrySet().stream()
 			.filter(obj -> obj.getKey().equals(shardInfo.getJobName())).findFirst().map(a -> a.getValue());
 
@@ -74,7 +77,10 @@ public class JobTaskController {
 	 * 处理流式数据
 	 */
 	@RequestMapping("/dataFlow-processData")
-	public LsCloudResponse processData(ShardInfo shardInfo, List data) {
+	public LsCloudResponse processData(@RequestBody ProcessDataInfo processDataInfo) {
+
+		ShardInfo shardInfo = processDataInfo.getShardInfo();
+		List data = processDataInfo.getData();
 
 		Optional<DataFlowJob> dataFlowJobOptional = ClientJobTaskListener.dataFlowJobMap.entrySet().stream()
 			.filter(obj -> obj.getKey().equals(shardInfo.getJobName())).findFirst().map(a -> a.getValue());
@@ -83,7 +89,6 @@ public class JobTaskController {
 			return LsCloudResponse.fail("未找到对应的任务实现");
 		}
 		DataFlowJob dataFlowJob = dataFlowJobOptional.get();
-
 		try {
 			if(null != data) {
 				//获取泛型

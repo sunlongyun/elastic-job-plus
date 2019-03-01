@@ -13,6 +13,7 @@
     <result property="jobType" column="job_type"/>
     <result property="failover" column="failover"/>
     <result property="misfire" column="misfire"/>
+    <result property="streamingProcess" column="streaming_process"/>
     <result property="applicationName" column="application_name"/>
     <result property="createTime" column="create_time" javaType="java.util.Date"/>
     <result property="updateTime" column="update_time" javaType="java.util.Date"/>

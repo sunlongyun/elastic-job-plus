@@ -37,6 +37,10 @@ public class JobCoreConfiguration {
 	 */
 	private Integer namespaceId;
 	/**
+	 * 是否流式处理
+	 */
+	private Boolean streamingProcess = false;
+	/**
 	 * 分片参数化
 	 */
 	private String shardingItemParameters;

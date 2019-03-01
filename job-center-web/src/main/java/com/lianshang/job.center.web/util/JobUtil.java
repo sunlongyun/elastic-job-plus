@@ -59,12 +59,12 @@ public class JobUtil implements ApplicationContextAware {
 	 */
 	public static void initDataflowJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 
-		String jobName = jobCoreConfigurationDto.getApplicationName() + ":" + jobCoreConfigurationDto.getJobName();
+		String jobName = jobCoreConfigurationDto.getApplicationName() + "___" + jobCoreConfigurationDto.getJobName();
 
 		// 定义SIMPLE类型配置
 		DataflowJobConfiguration dataflowJobConfiguration = new DataflowJobConfiguration(
 			getJobCoreConfiguration(jobCoreConfigurationDto, jobName),
-			MyDataFlowJob.class.getCanonicalName(), false);
+			MyDataFlowJob.class.getCanonicalName(), jobCoreConfigurationDto.getStreamingProcess());
 
 		// 定义Lite作业根配置
 		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfiguration).build();

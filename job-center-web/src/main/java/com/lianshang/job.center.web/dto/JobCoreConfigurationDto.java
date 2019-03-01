@@ -57,6 +57,10 @@ public class JobCoreConfigurationDto {
 	 */
 	private Integer namespaceId;
 	/**
+	 * 是否流式处理
+	 */
+	private Boolean streamingProcess = false;
+	/**
 	 * 是否有效
 	 */
 	private boolean validity;

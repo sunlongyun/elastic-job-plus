@@ -56,7 +56,6 @@ public class MySimpleJob implements SimpleJob{
 		map.add("shardingTotalCount", totalCount+"");
 		map.add("shardingParameter", parameter);
 		map.add("shardingItem", item+"");
-		map.add("taskId",(item-1)+"");
 		map.add("jobParameter", jobParameter);
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
