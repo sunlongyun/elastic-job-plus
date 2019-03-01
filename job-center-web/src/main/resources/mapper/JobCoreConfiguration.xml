@@ -8,6 +8,7 @@
     <result property="cron" column="cron"/>
     <result property="shardingTotalCount" column="sharding_total_count"/>
     <result property="shardingItemParameters" column="sharding_item_parameters"/>
+    <result property="namespaceId" column="namespace_id"/>
     <result property="jobParameter" column="job_parameter"/>
     <result property="jobType" column="job_type"/>
     <result property="failover" column="failover"/>
@@ -21,7 +22,8 @@
 
 
   <sql id="Base_Column_List">
-    id,job_name,cron,sharding_total_count,sharding_item_parameters,job_parameter,job_type,`failover`,`misfire`,
+    id,job_name,cron,sharding_total_count,sharding_item_parameters,namespace_id,
+    job_parameter,job_type,`failover`,`misfire`,
     application_name,create_time,update_time,description,validity
   </sql>
 
@@ -32,6 +34,7 @@
       cron,
       sharding_total_count,
       sharding_item_parameters,
+      namespace_id,
       job_parameter,
       job_type,
       failover,
@@ -44,6 +47,7 @@
         #{cron},
         #{shardingTotalCount},
         #{shardingItemParameters},
+        #{namespaceId},
         #{jobParameter},
         #{jobType},
         #{failover},
@@ -70,6 +74,9 @@
       </if>
       <if test="jobParameter != null">
         job_parameter = #{jobParameter},
+      </if>
+      <if test="namespaceId != null">
+        namespace_id = #{namespaceId},
       </if>
       <if test="failover != null">
         failover = #{failover},

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lianshang.job.center.web.mapper.ZookeeperConfigurationMapper">
-  <resultMap id="BaseResultMap" type="com.lianshang.job.center.web.entity.ZookeeperConfiguration">
+<mapper namespace="com.lianshang.job.center.web.mapper.NameSpaceConfigurationMapper">
+  <resultMap id="BaseResultMap" type="com.lianshang.job.center.web.entity.NameSpaceConfiguration">
     <id column="id" property="id"/>
     <result property="serverLists" column="server_lists"/>
     <result property="nameSpace" column="name_space"/>
@@ -23,8 +23,8 @@
 
 
   <!-- 添加记录-->
-  <insert id="insert" parameterType="com.lianshang.job.center.web.entity.ZookeeperConfiguration">
-    INSERT INTO zookeeper_configuration (
+  <insert id="insert" parameterType="com.lianshang.job.center.web.entity.NameSpaceConfiguration">
+    INSERT INTO namespace_configuration (
       server_lists,
       name_space,
       base_sleep_timeMilliseconds,
@@ -51,19 +51,19 @@
   <select id="getById" parameterType="int" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM zookeeper_configuration WHERE id = #{id} and validity = 1
+    FROM namespace_configuration WHERE id = #{id} and validity = 1
   </select>
   <!-- 根据名称查询空间-->
   <select id="getByName" parameterType="string" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM zookeeper_configuration WHERE name_space = #{namespace} and validity = 1
+    FROM namespace_configuration WHERE name_space = #{namespace} and validity = 1
 
   </select>
   <!-- 获取默认空间-->
   <select id="getDefault" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM zookeeper_configuration WHERE validity = 1 ORDER BY id asc limit 1
+    FROM namespace_configuration WHERE validity = 1 ORDER BY id asc limit 1
   </select>
 </mapper>

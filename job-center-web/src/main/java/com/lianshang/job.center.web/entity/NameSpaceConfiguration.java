@@ -10,7 +10,7 @@ import lombok.Data;
  * @date 2019-02-27 下午3:41
  */
 @Data
-public class ZookeeperConfiguration {
+public class NameSpaceConfiguration {
 
 	/**
 	 * 主键id

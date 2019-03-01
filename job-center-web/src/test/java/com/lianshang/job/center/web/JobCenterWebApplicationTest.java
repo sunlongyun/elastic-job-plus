@@ -1,8 +1,8 @@
 package com.lianshang.job.center.web;
 
-import com.lianshang.job.center.web.dto.ZookeeperConfigurationDto;
+import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
-import com.lianshang.job.center.web.service.ZookeeperConfigurationService;
+import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,21 +22,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class JobCenterWebApplicationTest {
 
 	@Autowired
-	private ZookeeperConfigurationService zookeeperConfigurationService;
+	private NameSpaceConfigurationService nameSpaceConfigurationService;
 	@Autowired
 	private JobCoreConfigurationService jobCoreConfigurationService;
 	@Test
 	public void test1() {
-		ZookeeperConfigurationDto zookeeperConfigurationDto = new ZookeeperConfigurationDto();
+		NameSpaceConfigurationDto zookeeperConfigurationDto = new NameSpaceConfigurationDto();
 		zookeeperConfigurationDto
 			.setServerLists("zk01.lian-shang.cn:2181,zk02.lian-shang.cn:2181,zk03.lian-shang.cn:2181");
 		zookeeperConfigurationDto.setNameSpace("default_namespace");
-		zookeeperConfigurationService.save(zookeeperConfigurationDto);
+		nameSpaceConfigurationService.save(zookeeperConfigurationDto);
 	}
 
 	@Test
 	public void test2() {
-		ZookeeperConfigurationDto zookeeperConfigurationDto = zookeeperConfigurationService.getDefault();
+		NameSpaceConfigurationDto zookeeperConfigurationDto = nameSpaceConfigurationService.getDefault();
 		log.info("zookeeperConfigurationDto=={}", zookeeperConfigurationDto);
 	}
 

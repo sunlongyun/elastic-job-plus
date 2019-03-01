@@ -31,7 +31,7 @@ public class JobCoreConfigurationDto {
 	/**
 	 * 分片总数量
 	 */
-	private Integer shardingTotalCount;
+	private Integer shardingTotalCount = 5;
 	/**
 	 * 分片参数化
 	 */
@@ -47,11 +47,15 @@ public class JobCoreConfigurationDto {
 	/**
 	 * 是否开启错过任务重新执行
 	 */
-	private Boolean misfire;
+	private Boolean misfire = false;
 	/**
 	 * 任务所在应用名称(Eureka 上应用名称)
 	 */
 	private String applicationName;
+	/**
+	 * 命名空间id
+	 */
+	private Integer namespaceId;
 	/**
 	 * 是否有效
 	 */

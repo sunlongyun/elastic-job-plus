@@ -1,6 +1,6 @@
 spring:
   application:
-    name: job-center
+    name: JOB-CENTER
   datasource:
     url: jdbc:mysql://rm-uf6kqb5wq9xzjw0asjo.mysql.rds.aliyuncs.com:3306/job?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
     username: chisong
@@ -21,7 +21,10 @@ mybatis:
 
 eureka:
    client:
+     register-with-eureka: true
+     fetch-registry: true
      serviceUrl:
-      defaultZone: http://172.16.2.67:8080/eureka/
-   instance:
-     hostname: localhost
+       defaultZone: http://172.16.2.67:8080/eureka/
+zookeepr:
+ serverLists: zk01.lian-shang.cn:2181,zk02.lian-shang.cn:2181,zk03.lian-shang.cn:2181
+

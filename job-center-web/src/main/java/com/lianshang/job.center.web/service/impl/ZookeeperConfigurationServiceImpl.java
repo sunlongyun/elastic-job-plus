@@ -1,9 +1,9 @@
 package com.lianshang.job.center.web.service.impl;
 
-import com.lianshang.job.center.web.dto.ZookeeperConfigurationDto;
-import com.lianshang.job.center.web.entity.ZookeeperConfiguration;
-import com.lianshang.job.center.web.mapper.ZookeeperConfigurationMapper;
-import com.lianshang.job.center.web.service.ZookeeperConfigurationService;
+import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
+import com.lianshang.job.center.web.entity.NameSpaceConfiguration;
+import com.lianshang.job.center.web.mapper.NameSpaceConfigurationMapper;
+import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,53 +15,53 @@ import org.springframework.stereotype.Service;
  * @date 2019-02-27 下午4:19
  */
 @Service
-public class ZookeeperConfigurationServiceImpl implements ZookeeperConfigurationService {
+public class ZookeeperConfigurationServiceImpl implements NameSpaceConfigurationService {
 
 	@Autowired
-	private ZookeeperConfigurationMapper zookeeperConfigurationMapper;
+	private NameSpaceConfigurationMapper nameSpaceConfigurationMapper;
 
 	@Override
-	public void save(ZookeeperConfigurationDto zookeeperConfigurationDto) {
+	public void save(NameSpaceConfigurationDto zookeeperConfigurationDto) {
 
 		if(null == zookeeperConfigurationDto) {
 			throw new RuntimeException("zookeeperConfigurationDto不能为空");
 		}
 
-		ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration();
+		NameSpaceConfiguration zookeeperConfiguration = new NameSpaceConfiguration();
 		BeanUtils.copyProperties(zookeeperConfigurationDto, zookeeperConfiguration);
-		zookeeperConfigurationMapper.insert(zookeeperConfiguration);
+		nameSpaceConfigurationMapper.insert(zookeeperConfiguration);
 	}
 
 	@Override
-	public ZookeeperConfigurationDto getById(Integer id) {
+	public NameSpaceConfigurationDto getById(Integer id) {
 
-		ZookeeperConfiguration zookeeperConfiguration = zookeeperConfigurationMapper.getById(id);
+		NameSpaceConfiguration zookeeperConfiguration = nameSpaceConfigurationMapper.getById(id);
 		return entityToDto(zookeeperConfiguration);
 	}
 
 	/**
 	 * entity转DTO
 	 */
-	private ZookeeperConfigurationDto entityToDto(ZookeeperConfiguration zookeeperConfiguration) {
-		if(null != zookeeperConfiguration) {
-			ZookeeperConfigurationDto zookeeperConfigurationDto = new ZookeeperConfigurationDto();
-			BeanUtils.copyProperties(zookeeperConfiguration, zookeeperConfigurationDto);
+	private NameSpaceConfigurationDto entityToDto(NameSpaceConfiguration nameSpaceConfiguration) {
+		if(null != nameSpaceConfiguration) {
+			NameSpaceConfigurationDto zookeeperConfigurationDto = new NameSpaceConfigurationDto();
+			BeanUtils.copyProperties(nameSpaceConfiguration, zookeeperConfigurationDto);
 			return zookeeperConfigurationDto;
 		}
 		return null;
 	}
 
 	@Override
-	public ZookeeperConfigurationDto getByName(String namespace) {
+	public NameSpaceConfigurationDto getByName(String namespace) {
 
-		ZookeeperConfiguration zookeeperConfiguration = zookeeperConfigurationMapper.getByName(namespace);
+		NameSpaceConfiguration zookeeperConfiguration = nameSpaceConfigurationMapper.getByName(namespace);
 		return entityToDto(zookeeperConfiguration);
 	}
 
 	@Override
-	public ZookeeperConfigurationDto getDefault() {
+	public NameSpaceConfigurationDto getDefault() {
 
-		ZookeeperConfiguration zookeeperConfiguration = zookeeperConfigurationMapper.getDefault();
+		NameSpaceConfiguration zookeeperConfiguration = nameSpaceConfigurationMapper.getDefault();
 		return entityToDto(zookeeperConfiguration);
 	}
 }

@@ -33,6 +33,10 @@ public class JobCoreConfiguration {
 	 */
 	private Integer shardingTotalCount;
 	/**
+	 * 命名空间id
+	 */
+	private Integer namespaceId;
+	/**
 	 * 分片参数化
 	 */
 	private String shardingItemParameters;

@@ -14,7 +14,7 @@ import org.springframework.beans.BeanUtils;
  * @date 2019-02-27 下午4:20
  */
 @Data
-public class ZookeeperConfigurationDto {
+public class NameSpaceConfigurationDto {
 
 	/**
 	 * 主键id
@@ -65,23 +65,7 @@ public class ZookeeperConfigurationDto {
 	 */
 	private boolean validity;
 
-	@Override
-	public String toString() {
-		return "ZookeeperConfigurationDto{" +
-			"id=" + id +
-			", serverLists='" + serverLists + '\'' +
-			", nameSpace='" + nameSpace + '\'' +
-			", baseSleepTimeMilliseconds=" + baseSleepTimeMilliseconds +
-			", maxSleepTimeMilliseconds=" + maxSleepTimeMilliseconds +
-			", maxRetries=" + maxRetries +
-			", sessionTimeoutMilliseconds=" + sessionTimeoutMilliseconds +
-			", connectionTimeoutMilliSeconds=" + connectionTimeoutMilliSeconds +
-			", digest='" + digest + '\'' +
-			", createTime=" + createTime +
-			", updateTime=" + updateTime +
-			", validity=" + validity +
-			'}';
-	}
+
 
 	/**
 	 * 获取当当的空间配置

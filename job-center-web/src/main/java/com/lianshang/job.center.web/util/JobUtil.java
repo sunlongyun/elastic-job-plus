@@ -5,10 +5,11 @@ import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
 import com.lianshang.job.center.web.job.MyDataflowJob;
 import com.lianshang.job.center.web.job.MySimpleJob;
-import com.lianshang.job.center.web.service.ZookeeperConfigurationService;
+import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -25,12 +26,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class JobUtil implements ApplicationContextAware {
 
-	private static ZookeeperConfigurationService zookeeperConfigurationService;
+	private static NameSpaceConfigurationService nameSpaceConfigurationService;
 
 	/**
 	 * 初始化SimpleJob
 	 */
-	public static void initSimpleJob(JobCoreConfigurationDto jobCoreConfigurationDto) {
+	public static void initSimpleJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 		String jobName = jobCoreConfigurationDto.getApplicationName() + "_" + jobCoreConfigurationDto.getJobName();
 
 		// 定义SIMPLE类型配置
@@ -40,15 +41,22 @@ public class JobUtil implements ApplicationContextAware {
 			MySimpleJob.class.getCanonicalName());
 		// 定义Lite作业根配置
 		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
-		new JobScheduler(zookeeperConfigurationService.getDefault().getCoordinatorRegistryCenter(),
-			simpleJobRootConfig).init();
+
+		CoordinatorRegistryCenter coordinatorRegistryCenter = null;
+
+		if(null != nameSpaceId) {
+			coordinatorRegistryCenter = nameSpaceConfigurationService.getById(nameSpaceId)
+				.getCoordinatorRegistryCenter();
+		}
+
+		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig).init();
 	}
 
 
 	/**
 	 * 初始化DataflowJob
 	 */
-	public static void initDataflowJob(JobCoreConfigurationDto jobCoreConfigurationDto) {
+	public static void initDataflowJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 
 		String jobName = jobCoreConfigurationDto.getApplicationName() + ":" + jobCoreConfigurationDto.getJobName();
 
@@ -59,8 +67,15 @@ public class JobUtil implements ApplicationContextAware {
 
 		// 定义Lite作业根配置
 		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfiguration).build();
-		new JobScheduler(zookeeperConfigurationService.getDefault().getCoordinatorRegistryCenter(), simpleJobRootConfig)
-			.init();
+
+		CoordinatorRegistryCenter coordinatorRegistryCenter = null;
+
+		if(null != nameSpaceId) {
+			coordinatorRegistryCenter = nameSpaceConfigurationService.getById(nameSpaceId)
+				.getCoordinatorRegistryCenter();
+		}
+
+		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig).init();
 	}
 
 	/**
@@ -80,6 +95,6 @@ public class JobUtil implements ApplicationContextAware {
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		zookeeperConfigurationService = applicationContext.getBean(ZookeeperConfigurationService.class);
+		nameSpaceConfigurationService = applicationContext.getBean(NameSpaceConfigurationService.class);
 	}
 }
