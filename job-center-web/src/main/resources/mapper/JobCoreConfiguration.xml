@@ -37,9 +37,10 @@
       namespace_id,
       job_parameter,
       job_type,
-      failover,
-      misfire,
-      application_name
+      `failover`,
+      `misfire`,
+      application_name,
+      description
     )
     VALUES
       (
@@ -52,7 +53,8 @@
         #{jobType},
         #{failover},
         #{misfire},
-        #{applicationName}
+        #{applicationName},
+        #{description}
       )
   </insert>
 

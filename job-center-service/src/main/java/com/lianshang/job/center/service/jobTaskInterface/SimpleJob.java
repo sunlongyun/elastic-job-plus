@@ -1,4 +1,4 @@
-package com.lianshang.job.center.service.jobTask;
+package com.lianshang.job.center.service.jobTaskInterface;
 
 import com.lianshang.job.center.service.beans.ShardInfo;
 

@@ -6,6 +6,7 @@ import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
 import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
+import com.lianshang.job.center.web.util.JobUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +62,7 @@ public class JobController {
 			saveJob(jobInfo, spaceConfigurationDto.getId());
 
 			//开启任务
-
+			JobUtil.initDataflowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
 		}
 		return JobResponse.success();
 	}

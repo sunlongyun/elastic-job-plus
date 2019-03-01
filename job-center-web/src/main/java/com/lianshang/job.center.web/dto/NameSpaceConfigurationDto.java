@@ -71,7 +71,7 @@ public class NameSpaceConfigurationDto {
 	 * 获取当当的空间配置
 	 */
 	public ZookeeperConfiguration getDangDangConfiguration() {
-		ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(serverLists, nameSpace);
+		ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(this.serverLists, this.nameSpace);
 		BeanUtils.copyProperties(this, zookeeperConfiguration);
 		return zookeeperConfiguration;
 	}

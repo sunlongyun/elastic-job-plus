@@ -43,7 +43,7 @@ public class JobCoreConfigurationDto {
 	/**
 	 * 是否开启任务失效转移
 	 */
-	private Boolean failover;
+	private Boolean failover = false;
 	/**
 	 * 是否开启错过任务重新执行
 	 */

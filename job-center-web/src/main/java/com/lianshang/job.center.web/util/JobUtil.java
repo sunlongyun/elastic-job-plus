@@ -32,7 +32,8 @@ public class JobUtil implements ApplicationContextAware {
 	 * 初始化SimpleJob
 	 */
 	public static void initSimpleJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
-		String jobName = jobCoreConfigurationDto.getApplicationName() + "_" + jobCoreConfigurationDto.getJobName();
+
+		String jobName = jobCoreConfigurationDto.getApplicationName() + "/" + jobCoreConfigurationDto.getJobName();
 
 		// 定义SIMPLE类型配置
 		SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(

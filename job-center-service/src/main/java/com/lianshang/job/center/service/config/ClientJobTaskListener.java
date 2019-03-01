@@ -1,7 +1,7 @@
 package com.lianshang.job.center.service.config;
 
-import com.lianshang.job.center.service.jobTask.DataFlowJob;
-import com.lianshang.job.center.service.jobTask.SimpleJob;
+import com.lianshang.job.center.service.jobTaskInterface.DataFlowJob;
+import com.lianshang.job.center.service.jobTaskInterface.SimpleJob;
 import com.lianshang.job.center.service.response.LsCloudResponse;
 import com.lianshang.job.center.service.response.ResponseCodeEnum;
 import com.lianshang.job.center.service.utils.JsonUtils;
@@ -50,7 +50,14 @@ public class ClientJobTaskListener implements ApplicationListener {
 	private volatile RestTemplate restTemplate = null;
 
 	private static final String JOB_SERVER_URL = "http://" + JOB_SERVER_NAME + "/job/jobNotify";
-
+	/**
+	 * 简单任务列表
+	 */
+	public static Map<String, SimpleJob> simpleJobMap = new HashMap<>();
+	/**
+	 * 流式任务列表
+	 */
+	public static Map<String, DataFlowJob> dataFlowJobMap = new HashMap<>();
 	/**
 	 * 创建 RestTemplate
 	 */
@@ -77,10 +84,10 @@ public class ClientJobTaskListener implements ApplicationListener {
 				restTemplate = (RestTemplate) applicationContext.getBean(CLOUD_CLIENT_TEMPLATE);
 
 				//获取实现 SimpleJob 的所有bean
-				Map<String, SimpleJob> simpleJobMap = applicationContext.getBeansOfType(SimpleJob.class);
+				simpleJobMap = applicationContext.getBeansOfType(SimpleJob.class);
 
 				//获取所有实现 DataFlowJob 接口的bean
-				Map<String, DataFlowJob> dataFlowJobMap = applicationContext.getBeansOfType(DataFlowJob.class);
+				dataFlowJobMap = applicationContext.getBeansOfType(DataFlowJob.class);
 
 				//向 job 服务发送消息
 				simpleJobMap.forEach(this::sendSimpleJobMsg);
