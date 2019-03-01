@@ -28,9 +28,9 @@ public class JobCoreConfigurationServiceImpl implements JobCoreConfigurationServ
 		if(null == jobCoreConfigurationDto) {
 			throw new RuntimeException("JobCoreConfigurationDto 对象不能为空");
 		}
-
-		jobCoreConfigurationMapper.insert(dtoToEntity(jobCoreConfigurationDto));
-
+		JobCoreConfiguration jobCoreConfiguration = dtoToEntity(jobCoreConfigurationDto);
+		jobCoreConfigurationMapper.insert(jobCoreConfiguration);
+		jobCoreConfigurationDto.setId(jobCoreConfiguration.getId());
 	}
 
 	@Override

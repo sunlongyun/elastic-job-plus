@@ -7,7 +7,7 @@ import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
-import com.lianshang.job.center.web.job.MyDataflowJob;
+import com.lianshang.job.center.web.job.MyDataFlowJob;
 import com.lianshang.job.center.web.job.MySimpleJob;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class JobUtil implements ApplicationContextAware {
 	 */
 	public static void initSimpleJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 
-		String jobName = jobCoreConfigurationDto.getApplicationName() + "/" + jobCoreConfigurationDto.getJobName();
+		String jobName = jobCoreConfigurationDto.getApplicationName() + "___" + jobCoreConfigurationDto.getJobName();
 
 		// 定义SIMPLE类型配置
 		SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(
@@ -64,7 +64,7 @@ public class JobUtil implements ApplicationContextAware {
 		// 定义SIMPLE类型配置
 		DataflowJobConfiguration dataflowJobConfiguration = new DataflowJobConfiguration(
 			getJobCoreConfiguration(jobCoreConfigurationDto, jobName),
-			MyDataflowJob.class.getCanonicalName(), false);
+			MyDataFlowJob.class.getCanonicalName(), false);
 
 		// 定义Lite作业根配置
 		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfiguration).build();

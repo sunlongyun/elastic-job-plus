@@ -28,7 +28,7 @@
   </sql>
 
   <!-- 添加任务-->
-  <insert id="insert" parameterType="com.lianshang.job.center.web.entity.JobCoreConfiguration">
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.lianshang.job.center.web.entity.JobCoreConfiguration">
     INSERT INTO job_core_configuration (
       job_name,
       cron,

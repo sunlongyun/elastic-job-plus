@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.lianshang.job.center.service.config.ClientJobTaskListener,\
+  com.lianshang.job.center.service.controller.JobTaskController

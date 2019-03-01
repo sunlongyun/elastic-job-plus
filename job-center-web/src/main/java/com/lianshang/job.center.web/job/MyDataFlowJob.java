@@ -5,12 +5,14 @@ import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.lianshang.job.center.service.beans.ShardInfo;
 import com.lianshang.job.center.service.response.LsCloudResponse;
 import com.lianshang.job.center.service.response.ResponseCodeEnum;
+import com.lianshang.job.center.web.config.RestTemplateConfigUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -20,9 +22,8 @@ import org.springframework.web.client.RestTemplate;
  * @date 2019-02-28 上午10:57
  */
 @Slf4j
-public class MyDataflowJob implements DataflowJob {
+public class MyDataFlowJob implements DataflowJob {
 
-	@Autowired
 	private RestTemplate restTemplate;
 
 	@Override
@@ -30,7 +31,7 @@ public class MyDataflowJob implements DataflowJob {
 
 		//这个jobName 是应用名称+beanName
 		String contextJobName = shardingContext.getJobName();
-		String[] nameList = contextJobName.split("\\/");
+		String[] nameList = contextJobName.split("___");
 
 		String applicationName = nameList[0];
 		String jobName = nameList[1];
@@ -39,8 +40,19 @@ public class MyDataflowJob implements DataflowJob {
 
 		String url = "http://" + applicationName.toUpperCase() + "/task/dataFlow-fetchData";
 
+		MultiValueMap<String, Object> requestEntity = new LinkedMultiValueMap<>();
+		requestEntity.add("shardInfo", shardInfo);
+
+		if(restTemplate == null) {
+			synchronized(MySimpleJob.class) {
+				if(restTemplate == null) {
+					restTemplate = RestTemplateConfigUtil.get();
+				}
+			}
+		}
+
 		ResponseEntity<LsCloudResponse> responseResponseEntity = restTemplate
-			.postForEntity(url, null, LsCloudResponse.class, shardInfo);
+			.postForEntity(url, requestEntity, LsCloudResponse.class);
 
 		log.info("jobName:{} 响应结果:{}", jobName, responseResponseEntity);
 		if(null != responseResponseEntity) {
@@ -84,7 +96,7 @@ public class MyDataflowJob implements DataflowJob {
 	public void processData(ShardingContext shardingContext, List data) {
 		//这个jobName 是应用名称+beanName
 		String contextJobName = shardingContext.getJobName();
-		String[] nameList = contextJobName.split("\\/");
+		String[] nameList = contextJobName.split("___");
 
 		String applicationName = nameList[0];
 		String jobName = nameList[1];
@@ -93,8 +105,20 @@ public class MyDataflowJob implements DataflowJob {
 
 		String url = "http://" + applicationName.toUpperCase() + "/task/dataFlow-processData";
 
+		if(restTemplate == null) {
+			synchronized(MySimpleJob.class) {
+				if(restTemplate == null) {
+					restTemplate = RestTemplateConfigUtil.get();
+				}
+			}
+		}
+
+		MultiValueMap<String, Object> requestEntity = new LinkedMultiValueMap<>();
+		requestEntity.add("shardInfo", shardInfo);
+		requestEntity.add("data", data);
+
 		ResponseEntity<LsCloudResponse> responseResponseEntity = restTemplate
-			.postForEntity(url, null, LsCloudResponse.class, shardInfo,data);
+			.postForEntity(url, requestEntity, LsCloudResponse.class);
 
 		log.info("jobName:{} 响应结果:{}", jobName, responseResponseEntity);
 	}

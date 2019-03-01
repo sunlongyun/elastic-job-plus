@@ -3,6 +3,7 @@ package com.lianshang.job.center.web.controller;
 import com.lianshang.job.center.web.controller.request.JobInfo;
 import com.lianshang.job.center.web.controller.response.JobResponse;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
+import com.lianshang.job.center.web.dto.JobCoreConfigurationDto.JobType;
 import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
@@ -59,10 +60,14 @@ public class JobController {
 			.getByName(spaceConfigurationDto.getNameSpace(), jobInfo.getJobName());
 		if(null == jobCoreConfigurationDto) {//job不存在,创建job
 			//TODO 添加分布式锁
-			saveJob(jobInfo, spaceConfigurationDto.getId());
-
+			Integer jobId=  saveJob(jobInfo, spaceConfigurationDto.getId());
+			jobCoreConfigurationDto = jobCoreConfigurationService.getById(jobId);
 			//开启任务
-			JobUtil.initDataflowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+			if(JobType.SIMPLE_JOB.code().equals(jobInfo.getJobType())) {
+				JobUtil.initSimpleJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+			} else if(JobType.DATA_FLOW_JOB.code().equals(jobInfo.getJobType())) {
+				JobUtil.initDataflowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+			}
 		}
 		return JobResponse.success();
 	}
@@ -85,7 +90,7 @@ public class JobController {
 	/**
 	 * 添加任务
 	 */
-	private void saveJob(JobInfo jobInfo, Integer namespaceId) {
+	private Integer saveJob(JobInfo jobInfo, Integer namespaceId) {
 
 		JobCoreConfigurationDto jobCoreConfigurationDto;
 		jobCoreConfigurationDto = new JobCoreConfigurationDto();
@@ -97,5 +102,7 @@ public class JobController {
 		jobCoreConfigurationDto.setNamespaceId(namespaceId);
 
 		jobCoreConfigurationService.save(jobCoreConfigurationDto);
+
+		return jobCoreConfigurationDto.getId();
 	}
 }

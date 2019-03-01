@@ -104,4 +104,7 @@ public class JobTaskController {
 
 	}
 
+	public JobTaskController() {
+		log.info("JobTaskController初始化---------");
+	}
 }
