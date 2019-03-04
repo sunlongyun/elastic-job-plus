@@ -55,7 +55,7 @@ public class JobUtil implements ApplicationContextAware {
 
 
 	/**
-	 * 初始化DataflowJob
+	 * 初始化DataFlowJob
 	 */
 	public static void initDataFlowJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 
