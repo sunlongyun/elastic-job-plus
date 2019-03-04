@@ -51,79 +51,11 @@ public class InitJobTaskListener implements ApplicationListener, ApplicationCont
 
 			ContextRefreshedEvent contextRefreshedEvent = (ContextRefreshedEvent) event;
 			ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-			//生成表结构
-			createTableIfNotExists();
 
 			if(ROOT_TAG.equals(applicationContext.getId())) {
 				log.info("应用初始化完成-------");
 				jobCoreConfigurationService.getAllList().forEach(this::initJob);
 			}
-		}
-	}
-
-	/**
-	 * 如果当前数据源,必须的表结构还不存在,则创建
-	 */
-	private void createTableIfNotExists() {
-		//查询数据库表是否存在,不存在则创建
-		Connection connection = null;
-		Statement statement = null;
-		try {
-			connection = dataSource.getConnection();
-			statement = connection.createStatement();
-
-			//如果表 namespace_configuration,则创建一个
-			createIfNotExistForNameSpaceConfiguration(statement);
-			//如果表 job_core_configuration不能存在,则创建一个
-			createIfNotExistForJobCoreConfiguration(statement);
-
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				if(null != statement) {
-					statement.close();
-				}
-				if(null != connection) {
-					connection.close();
-				}
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * 如果表 NAMESPACE_CONFIGURATION,则创建一个
-	 */
-	private void createIfNotExistForNameSpaceConfiguration(Statement statement) throws SQLException, IOException {
-		String exists_namespaceConfiguration_sql = "SELECT table_name FROM information_schema.TABLES "
-			+ "WHERE TABLE_NAME=\"" + NAMESPACE_CONFIGURATION + "\";";
-
-		ResultSet namespaceConfigurationSet = statement.executeQuery(exists_namespaceConfiguration_sql);
-		createTable(statement, namespaceConfigurationSet);
-	}
-
-	/**
-	 * 如果表 job_core_configuration不能存在,则创建一个
-	 */
-	private void createIfNotExistForJobCoreConfiguration(Statement statement) throws SQLException, IOException {
-		String exists_namespaceConfiguration_sql = "SELECT table_name FROM information_schema.TABLES "
-			+ "WHERE TABLE_NAME=\"" + JOB_CORE_CONFIGURATION + "\";";
-
-		ResultSet namespaceConfigurationSet = statement.executeQuery(exists_namespaceConfiguration_sql);
-		createTable(statement, namespaceConfigurationSet);
-	}
-
-	private void createTable(Statement statement, ResultSet namespaceConfigurationSet)
-		throws SQLException, IOException {
-		if(!namespaceConfigurationSet.next()) {//不存在,则创建表结构
-			File namespaceConfiguration_sql = new File("classpath:/sql_file/namespace_configuration.sql");
-			List<String> readLines = FileUtils.readLines(namespaceConfiguration_sql,
-				Charset.defaultCharset());
-
-			String create_namespaceConfiguration_sql = StringUtils.join(readLines.toArray(), " ");
-			statement.execute(create_namespaceConfiguration_sql);
 		}
 	}
 
