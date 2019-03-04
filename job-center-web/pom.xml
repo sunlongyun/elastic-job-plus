@@ -28,6 +28,7 @@
     <apollo-client.version>1.1.2</apollo-client.version>
     <curator-client.version>${curator-framework.version}</curator-client.version>
     <curator-framework.version>2.10.0</curator-framework.version>
+    <redis-util.version>0.0.1</redis-util.version>
   </properties>
 
   <dependencies>
@@ -130,6 +131,12 @@
           <groupId>org.apache.curator</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lianshang.basic-component</groupId>
+      <artifactId>redis-util</artifactId>
+      <version>${redis-util.version}</version>
     </dependency>
 
 

@@ -3,6 +3,8 @@ package com.lianshang.job.center.web.util;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -11,6 +13,8 @@ import com.lianshang.job.center.web.job.MyDataFlowJob;
 import com.lianshang.job.center.web.job.MySimpleJob;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
+import com.lianshang.redis.util.RedisLockUtil;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +33,7 @@ public class JobUtil implements ApplicationContextAware {
 
 	private static NameSpaceConfigurationService nameSpaceConfigurationService;
 	private static JobCoreConfigurationService jobCoreConfigurationService = null;
+	private static DataSource dataSource = null;
 	/**
 	 * 初始化SimpleJob
 	 */
@@ -51,10 +56,10 @@ public class JobUtil implements ApplicationContextAware {
 				.getCoordinatorRegistryCenter();
 		}
 
-		JobScheduler jobScheduler = new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig);
-		jobScheduler.init();
-		;
-		jobScheduler.getSchedulerFacade();
+		// 定义日志数据库事件溯源配置
+		JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+
+		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig).init();
 	}
 
 
@@ -80,7 +85,10 @@ public class JobUtil implements ApplicationContextAware {
 				.getCoordinatorRegistryCenter();
 		}
 
-		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig).init();
+		// 定义日志数据库事件溯源配置
+		JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+
+		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig).init();
 	}
 
 	/**
@@ -102,6 +110,7 @@ public class JobUtil implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		nameSpaceConfigurationService = applicationContext.getBean(NameSpaceConfigurationService.class);
 		jobCoreConfigurationService = applicationContext.getBean(JobCoreConfigurationService.class);
+		dataSource = applicationContext.getBean(DataSource.class);
 	}
 
 	/**
@@ -109,16 +118,36 @@ public class JobUtil implements ApplicationContextAware {
 	 */
 	public static void freshJobItem(JobCoreConfiguration jobCoreConfiguration) {
 
-		//TODO 添加分布式锁
-		String[] jobNameList = jobCoreConfiguration.getJobName().split("___");
-		String applicationName = jobNameList[0];
-		String jobName = jobNameList[1];
+		try {
 
-		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
-			jobName);
+			boolean locked = RedisLockUtil.tryLock(jobCoreConfiguration.getJobName());
+			if(!locked) {
+				return;
+			}
 
-		//更新
-		if(null != jobCoreConfiguration){
+			String[] jobNameList = jobCoreConfiguration.getJobName().split("___");
+			String applicationName = jobNameList[0];
+			String jobName = jobNameList[1];
+
+			JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
+				jobName);
+
+			//更新
+			editJob(jobCoreConfiguration, jobCoreConfigurationDto);
+
+		} finally {
+			RedisLockUtil.releaseLock(jobCoreConfiguration.getJobName());
+		}
+	}
+
+	/**
+	 * 根据job记录
+	 * @param jobCoreConfiguration
+	 * @param jobCoreConfigurationDto
+	 */
+	private static void editJob(JobCoreConfiguration jobCoreConfiguration,
+		JobCoreConfigurationDto jobCoreConfigurationDto) {
+		if(null != jobCoreConfiguration) {
 			jobCoreConfigurationDto.setDescription(jobCoreConfiguration.getDescription());
 			jobCoreConfigurationDto.setCron(jobCoreConfiguration.getCron());
 			jobCoreConfigurationDto.setJobParameter(jobCoreConfiguration.getJobParameter());

@@ -10,6 +10,7 @@ import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import com.lianshang.job.center.web.util.JobUtil;
+import com.lianshang.redis.util.RedisLockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,21 +49,38 @@ public class JobController {
 	@RequestMapping("/jobNotify")
 	public JobResponse jobNotify(@RequestBody JobInfo jobInfo) {
 
-		NameSpaceConfigurationDto spaceConfigurationDto = nameSpaceConfigurationService.getByName(jobInfo
-			.getNamespace());
-		if(spaceConfigurationDto == null) {//命名空间不存在,则创建
-
-			//TODO 添加分布式锁
-
-			spaceConfigurationDto = saveZookeeperConfigurationDto(jobInfo);
+		boolean locked = RedisLockUtil.tryLock(jobInfo.getJobName());
+		if(!locked) {
+			return JobResponse.fail("获取分布式锁失败");
 		}
 
-		//查看job是否存在
-		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService
-			.getByName(spaceConfigurationDto.getNameSpace(), jobInfo.getJobName());
+		try {
+
+			NameSpaceConfigurationDto spaceConfigurationDto = nameSpaceConfigurationService.getByName(jobInfo
+				.getNamespace());
+
+			if(spaceConfigurationDto == null) {//命名空间不存在,则创建
+				spaceConfigurationDto = saveZookeeperConfigurationDto(jobInfo);
+			}
+
+			//查看job是否存在
+			JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService
+				.getByName(spaceConfigurationDto.getNameSpace(), jobInfo.getJobName());
+
+			//如果不存在,则创建
+			createJobIfNotExist(jobInfo, spaceConfigurationDto, jobCoreConfigurationDto);
+			return JobResponse.success();
+
+		} finally {
+			RedisLockUtil.releaseLock(jobInfo.getJobName());
+		}
+	}
+	//如果job不存在则创建job
+	private void createJobIfNotExist(@RequestBody JobInfo jobInfo, NameSpaceConfigurationDto spaceConfigurationDto,
+		JobCoreConfigurationDto jobCoreConfigurationDto) {
 		if(null == jobCoreConfigurationDto) {//job不存在,创建job
-			//TODO 添加分布式锁
-			Integer jobId=  saveJob(jobInfo, spaceConfigurationDto.getId());
+
+			Integer jobId = saveJob(jobInfo, spaceConfigurationDto.getId());
 			jobCoreConfigurationDto = jobCoreConfigurationService.getById(jobId);
 			//开启任务
 			if(JobType.SIMPLE_JOB.code().equals(jobInfo.getJobType())) {
@@ -72,7 +90,6 @@ public class JobController {
 			}
 
 		}
-		return JobResponse.success();
 	}
 
 	/**

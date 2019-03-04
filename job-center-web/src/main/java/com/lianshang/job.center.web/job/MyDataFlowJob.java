@@ -142,5 +142,14 @@ public class MyDataFlowJob implements DataflowJob {
 			.postForEntity(url, request, LsCloudResponse.class);
 
 		log.info("jobName:{} 响应结果:{}", jobName, responseResponseEntity);
+
+		LsCloudResponse lsCloudResponse= responseResponseEntity.getBody();
+		if(null == lsCloudResponse){
+			throw  new RuntimeException("服务请求异常");
+		}else{
+			if(!ResponseCodeEnum.SUCCESS.code().equals(lsCloudResponse.getCode())){
+				throw new RuntimeException(lsCloudResponse.getMsg());
+			}
+		}
 	}
 }

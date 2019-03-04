@@ -3,6 +3,7 @@ package com.lianshang.job.center.web.job;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.lianshang.job.center.service.response.LsCloudResponse;
+import com.lianshang.job.center.service.response.ResponseCodeEnum;
 import com.lianshang.job.center.web.config.RestTemplateConfigUtil;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -73,5 +74,16 @@ public class MySimpleJob implements SimpleJob{
 			.postForEntity(url, request, LsCloudResponse.class);
 
 		log.info("jobName:{} 响应结果:{}", jobName, responseResponseEntity);
+
+
+		LsCloudResponse lsCloudResponse= responseResponseEntity.getBody();
+		if(null == lsCloudResponse){
+			throw  new RuntimeException("服务请求异常");
+		}else{
+			if(!ResponseCodeEnum.SUCCESS.code().equals(lsCloudResponse.getCode())){
+				throw new RuntimeException(lsCloudResponse.getMsg());
+			}
+		}
+
 	}
 }

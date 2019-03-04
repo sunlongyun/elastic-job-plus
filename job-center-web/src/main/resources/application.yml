@@ -9,3 +9,12 @@ spring:
 
 server:
   port: 8080
+
+
+feign:
+  client:
+    default:
+      readTimeout: 20000
+
+ribbon:
+  ReadTimeout: 20000
