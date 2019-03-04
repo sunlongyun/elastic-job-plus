@@ -1,7 +1,5 @@
 package com.lianshang.job.center.web.controller;
 
-import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.lianshang.job.center.web.controller.request.JobInfo;
 import com.lianshang.job.center.web.controller.response.JobResponse;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
@@ -10,7 +8,6 @@ import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import com.lianshang.job.center.web.util.JobUtil;
-import com.lianshang.redis.util.RedisLockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +29,7 @@ public class JobController {
 	/**
 	 * 默认执行时间
 	 */
-	public static final String DEFAULT_CRON = "0 59 23 * * ?";
+	public static final String DEFAULT_CRON = "0 * * 31 12 ?";
 	@Autowired
 	private NameSpaceConfigurationService nameSpaceConfigurationService;
 	@Autowired
@@ -49,35 +46,38 @@ public class JobController {
 	@RequestMapping("/jobNotify")
 	public JobResponse jobNotify(@RequestBody JobInfo jobInfo) {
 
-		boolean locked = RedisLockUtil.tryLock(jobInfo.getJobName());
-		if(!locked) {
-			return JobResponse.fail("获取分布式锁失败");
-		}
-
-		try {
 
 			NameSpaceConfigurationDto spaceConfigurationDto = nameSpaceConfigurationService.getByName(jobInfo
 				.getNamespace());
 
-			if(spaceConfigurationDto == null) {//命名空间不存在,则创建
-				spaceConfigurationDto = saveZookeeperConfigurationDto(jobInfo);
-			}
+		if(spaceConfigurationDto == null) {//命名空间不存在,则创建
+			spaceConfigurationDto = saveZookeeperConfigurationDto(jobInfo);
+		} else if(!spaceConfigurationDto.isValidity()) {
+			spaceConfigurationDto.setValidity(true);
+			nameSpaceConfigurationService.edit(spaceConfigurationDto);
+			spaceConfigurationDto = nameSpaceConfigurationService.getById(spaceConfigurationDto.getId());
+		}
 
 			//查看job是否存在
 			JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService
 				.getByName(spaceConfigurationDto.getNameSpace(), jobInfo.getJobName());
 
 			//如果不存在,则创建
-			createJobIfNotExist(jobInfo, spaceConfigurationDto, jobCoreConfigurationDto);
-			return JobResponse.success();
+		Integer jobId = createJobIfNotExist(jobInfo, spaceConfigurationDto, jobCoreConfigurationDto);
 
-		} finally {
-			RedisLockUtil.releaseLock(jobInfo.getJobName());
+		jobCoreConfigurationDto = jobCoreConfigurationService.getById(jobId);
+
+		if(!jobCoreConfigurationDto.isValidity()) {//无效的更新为有效
+			jobCoreConfigurationDto.setValidity(true);
+			jobCoreConfigurationService.edit(jobCoreConfigurationDto);
 		}
+
+		return JobResponse.success();
 	}
 	//如果job不存在则创建job
-	private void createJobIfNotExist(@RequestBody JobInfo jobInfo, NameSpaceConfigurationDto spaceConfigurationDto,
+	private int createJobIfNotExist(@RequestBody JobInfo jobInfo, NameSpaceConfigurationDto spaceConfigurationDto,
 		JobCoreConfigurationDto jobCoreConfigurationDto) {
+
 		if(null == jobCoreConfigurationDto) {//job不存在,创建job
 
 			Integer jobId = saveJob(jobInfo, spaceConfigurationDto.getId());
@@ -89,7 +89,9 @@ public class JobController {
 				JobUtil.initDataFlowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
 			}
 
+			return jobId;
 		}
+		return jobCoreConfigurationDto.getId();
 	}
 
 	/**
@@ -126,16 +128,4 @@ public class JobController {
 		return jobCoreConfigurationDto.getId();
 	}
 
-	public static class MyElasticJobListener implements ElasticJobListener{
-
-		@Override
-		public void beforeJobExecuted(ShardingContexts shardingContexts) {
-
-		}
-
-		@Override
-		public void afterJobExecuted(ShardingContexts shardingContexts) {
-
-		}
-	}
 }

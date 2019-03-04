@@ -13,7 +13,6 @@ import com.lianshang.job.center.web.job.MyDataFlowJob;
 import com.lianshang.job.center.web.job.MySimpleJob;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
-import com.lianshang.redis.util.RedisLockUtil;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -43,9 +42,9 @@ public class JobUtil implements ApplicationContextAware {
 
 		// 定义SIMPLE类型配置
 		SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(
-			getJobCoreConfiguration(jobCoreConfigurationDto,
-				jobName),
+			getJobCoreConfiguration(jobCoreConfigurationDto, jobName),
 			MySimpleJob.class.getCanonicalName());
+
 		// 定义Lite作业根配置
 		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
 
@@ -118,12 +117,6 @@ public class JobUtil implements ApplicationContextAware {
 	 */
 	public static void freshJobItem(JobCoreConfiguration jobCoreConfiguration) {
 
-		try {
-
-			boolean locked = RedisLockUtil.tryLock(jobCoreConfiguration.getJobName());
-			if(!locked) {
-				return;
-			}
 
 			String[] jobNameList = jobCoreConfiguration.getJobName().split("___");
 			String applicationName = jobNameList[0];
@@ -134,10 +127,6 @@ public class JobUtil implements ApplicationContextAware {
 
 			//更新
 			editJob(jobCoreConfiguration, jobCoreConfigurationDto);
-
-		} finally {
-			RedisLockUtil.releaseLock(jobCoreConfiguration.getJobName());
-		}
 	}
 
 	/**

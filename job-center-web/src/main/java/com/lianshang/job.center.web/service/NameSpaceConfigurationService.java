@@ -34,6 +34,10 @@ public interface NameSpaceConfigurationService {
 	 */
 	public NameSpaceConfigurationDto getDefault();
 
-
+	/**
+	 * 编辑
+	 * @param nameSpaceConfigurationDto
+	 */
+	public void edit(NameSpaceConfigurationDto nameSpaceConfigurationDto);
 
 }

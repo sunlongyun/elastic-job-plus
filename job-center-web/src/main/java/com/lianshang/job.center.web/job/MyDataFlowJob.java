@@ -90,12 +90,6 @@ public class MyDataFlowJob implements DataflowJob {
 		String jobParameter = shardingContext.getJobParameter();
 		int totalCount = shardingContext.getShardingTotalCount();
 		int item = shardingContext.getShardingItem();
-		log.info("发送请求---------{},thread:{}", new Date(), Thread.currentThread());
-		log.info("jobName=>{}", contextJobName);
-		log.info("shardingParameter=>{}", parameter);
-		log.info("jobParameter=>{}", jobParameter);
-		log.info("totalCount=>{}", totalCount);
-		log.info("item=>{}", item);
 
 		ShardInfo shardInfo = new ShardInfo();
 		shardInfo.setJobName(jobName);
@@ -128,7 +122,9 @@ public class MyDataFlowJob implements DataflowJob {
 		}
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		MediaType mediaType = MediaType.parseMediaType("application/json; charset=UTF-8");
+		headers.setContentType(mediaType);
+		headers.add("Accept", MediaType.APPLICATION_JSON.toString());
 
 		ProcessDataInfo processDataInfo = new ProcessDataInfo();
 		processDataInfo.setData(data);

@@ -58,7 +58,6 @@ public class InitJobTaskListener implements ApplicationListener, ApplicationCont
 				log.info("应用初始化完成-------");
 				jobCoreConfigurationService.getAllList().forEach(this::initJob);
 			}
-
 		}
 	}
 

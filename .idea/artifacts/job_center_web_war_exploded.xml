@@ -77,8 +77,13 @@
           <element id="library" level="project" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" />
           <element id="library" level="project" name="Maven: io.reactivex:rxnetty:0.4.9" />
           <element id="library" level="project" name="Maven: io.netty:netty-codec-http:4.1.29.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec:4.1.29.Final" />
           <element id="library" level="project" name="Maven: io.netty:netty-transport-native-epoll:4.1.29.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-common:4.1.29.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-buffer:4.1.29.Final" />
           <element id="library" level="project" name="Maven: io.netty:netty-transport-native-unix-common:4.1.29.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-transport:4.1.29.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-resolver:4.1.29.Final" />
           <element id="library" level="project" name="Maven: com.netflix.ribbon:ribbon-core:2.2.5" />
           <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
           <element id="library" level="project" name="Maven: com.netflix.ribbon:ribbon-httpclient:2.2.5" />
@@ -165,22 +170,6 @@
           <element id="library" level="project" name="Maven: com.google.guava:guava:16.0.1" />
           <element id="library" level="project" name="Maven: org.apache.curator:curator-framework:2.10.0" />
           <element id="library" level="project" name="Maven: org.apache.curator:curator-recipes:2.10.0" />
-          <element id="library" level="project" name="Maven: com.lianshang.basic-component:redis-util:0.0.1" />
-          <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-data-redis:2.0.6.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework.data:spring-data-redis:2.0.11.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework.data:spring-data-keyvalue:2.0.11.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework.data:spring-data-commons:2.0.11.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-oxm:5.0.10.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-context-support:5.0.10.RELEASE" />
-          <element id="library" level="project" name="Maven: io.lettuce:lettuce-core:5.0.5.RELEASE" />
-          <element id="library" level="project" name="Maven: io.projectreactor:reactor-core:3.1.10.RELEASE" />
-          <element id="library" level="project" name="Maven: org.reactivestreams:reactive-streams:1.0.2" />
-          <element id="library" level="project" name="Maven: io.netty:netty-common:4.1.29.Final" />
-          <element id="library" level="project" name="Maven: io.netty:netty-transport:4.1.29.Final" />
-          <element id="library" level="project" name="Maven: io.netty:netty-buffer:4.1.29.Final" />
-          <element id="library" level="project" name="Maven: io.netty:netty-resolver:4.1.29.Final" />
-          <element id="library" level="project" name="Maven: io.netty:netty-handler:4.1.29.Final" />
-          <element id="library" level="project" name="Maven: io.netty:netty-codec:4.1.29.Final" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.15" />
           <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.6.1" />
         </element>

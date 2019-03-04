@@ -52,19 +52,36 @@
   <select id="getById" parameterType="int" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM namespace_configuration WHERE id = #{id} and validity = 1
+    FROM namespace_configuration WHERE id = #{id}
   </select>
   <!-- 根据名称查询空间-->
   <select id="getByName" parameterType="string" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM namespace_configuration WHERE name_space = #{namespace} and validity = 1
+    FROM namespace_configuration WHERE name_space = #{namespace}
 
   </select>
   <!-- 获取默认空间-->
   <select id="getDefault" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM namespace_configuration WHERE validity = 1 ORDER BY id asc limit 1
+    FROM namespace_configuration  ORDER BY id asc limit 1
   </select>
+
+  <!-- 修改命名空间配置-->
+  <update id="update" parameterType="com.lianshang.job.center.web.entity.NameSpaceConfiguration">
+    UPDATE namespace_configuration
+    <trim prefix="set" suffixOverrides=",">
+      <if test="serverLists != null">
+        server_lists = #{serverLists},
+      </if>
+      <if test="nameSpace != null">
+        name_space = #{nameSpace},
+      </if>
+      <if test="validity != null">
+        validity = #{validity},
+      </if>
+    </trim>
+    where id = #{id}
+  </update>
 </mapper>

@@ -88,7 +88,7 @@
        `misfire` = #{misfire},
       </if>
       <if test="applicationName != null">
-        application_name = #{applicationName},
+        `application_name` = #{applicationName},
       </if>
       <if test="validity != null">
         validity = #{validity},
@@ -110,7 +110,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM job_core_configuration
-    WHERE job_name = #{jobName} and application_name = #{applicationName} and validity = 1
+    WHERE job_name = #{jobName} and application_name = #{applicationName}
   </select>
 
   <!-- 基于所有有效的job列表-->

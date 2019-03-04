@@ -28,4 +28,12 @@ public interface NameSpaceConfigurationMapper {
 	 * @return
 	 */
 	public NameSpaceConfiguration getDefault();
+
+	/**
+	 * 编辑
+	 * @param nameSpaceConfiguration
+	 * @return
+	 */
+	public int update(NameSpaceConfiguration nameSpaceConfiguration);
+
 }

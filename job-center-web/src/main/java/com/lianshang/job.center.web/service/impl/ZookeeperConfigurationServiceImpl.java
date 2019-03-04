@@ -67,4 +67,16 @@ public class ZookeeperConfigurationServiceImpl implements NameSpaceConfiguration
 		NameSpaceConfiguration zookeeperConfiguration = nameSpaceConfigurationMapper.getDefault();
 		return entityToDto(zookeeperConfiguration);
 	}
+
+	@Override
+	public void edit(NameSpaceConfigurationDto nameSpaceConfigurationDto) {
+		if(null == nameSpaceConfigurationDto) {
+			throw new RuntimeException("更新对象不能为空");
+		}
+
+		NameSpaceConfiguration nameSpaceConfiguration = new NameSpaceConfiguration();
+		BeanUtils.copyProperties(nameSpaceConfigurationDto, nameSpaceConfiguration);
+
+		nameSpaceConfigurationMapper.update(nameSpaceConfiguration);
+	}
 }

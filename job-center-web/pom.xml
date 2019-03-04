@@ -133,13 +133,6 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>com.lianshang.basic-component</groupId>
-      <artifactId>redis-util</artifactId>
-      <version>${redis-util.version}</version>
-    </dependency>
-
-
     <!-- https://mvnrepocuspringcusitory.com/artifact/mysql/mysql-connector-java -->
     <dependency>
       <groupId>mysql</groupId>
