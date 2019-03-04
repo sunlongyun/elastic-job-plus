@@ -23,7 +23,8 @@
 
 
   <!-- 添加记录-->
-  <insert id="insert" parameterType="com.lianshang.job.center.web.entity.NameSpaceConfiguration">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+    parameterType="com.lianshang.job.center.web.entity.NameSpaceConfiguration">
     INSERT INTO namespace_configuration (
       server_lists,
       name_space,

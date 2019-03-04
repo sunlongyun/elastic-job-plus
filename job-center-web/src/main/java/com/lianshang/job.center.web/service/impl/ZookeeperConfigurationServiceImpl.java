@@ -29,7 +29,10 @@ public class ZookeeperConfigurationServiceImpl implements NameSpaceConfiguration
 
 		NameSpaceConfiguration zookeeperConfiguration = new NameSpaceConfiguration();
 		BeanUtils.copyProperties(zookeeperConfigurationDto, zookeeperConfiguration);
+
 		nameSpaceConfigurationMapper.insert(zookeeperConfiguration);
+
+		zookeeperConfigurationDto.setId(zookeeperConfiguration.getId());
 	}
 
 	@Override
