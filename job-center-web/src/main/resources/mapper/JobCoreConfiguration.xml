@@ -82,10 +82,10 @@
         namespace_id = #{namespaceId},
       </if>
       <if test="failover != null">
-        failover = #{failover},
+        `failover` = #{failover},
       </if>
       <if test="misfire != null">
-        misfire = #{misfire},
+       `misfire` = #{misfire},
       </if>
       <if test="applicationName != null">
         application_name = #{applicationName},

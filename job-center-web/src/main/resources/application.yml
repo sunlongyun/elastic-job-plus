@@ -27,4 +27,5 @@ eureka:
        defaultZone: http://172.16.2.67:8080/eureka/
 zookeepr:
  serverLists: zk01.lian-shang.cn:2181,zk02.lian-shang.cn:2181,zk03.lian-shang.cn:2181
+debug: false
 

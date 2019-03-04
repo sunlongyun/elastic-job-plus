@@ -9,6 +9,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
 import com.lianshang.job.center.web.job.MyDataFlowJob;
 import com.lianshang.job.center.web.job.MySimpleJob;
+import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class JobUtil implements ApplicationContextAware {
 
 	private static NameSpaceConfigurationService nameSpaceConfigurationService;
-
+	private static JobCoreConfigurationService jobCoreConfigurationService = null;
 	/**
 	 * 初始化SimpleJob
 	 */
@@ -50,12 +51,15 @@ public class JobUtil implements ApplicationContextAware {
 				.getCoordinatorRegistryCenter();
 		}
 
-		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig).init();
+		JobScheduler jobScheduler = new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig);
+		jobScheduler.init();
+		;
+		jobScheduler.getSchedulerFacade();
 	}
 
 
 	/**
-	 * 初始化DataFlowJob
+	 *初始化DataFlowJob
 	 */
 	public static void initDataFlowJob(JobCoreConfigurationDto jobCoreConfigurationDto, Integer nameSpaceId) {
 
@@ -97,5 +101,33 @@ public class JobUtil implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		nameSpaceConfigurationService = applicationContext.getBean(NameSpaceConfigurationService.class);
+		jobCoreConfigurationService = applicationContext.getBean(JobCoreConfigurationService.class);
 	}
+
+	/**
+	 * 刷新数据库配置
+	 */
+	public static void freshJobItem(JobCoreConfiguration jobCoreConfiguration) {
+
+		//TODO 添加分布式锁
+		String[] jobNameList = jobCoreConfiguration.getJobName().split("___");
+		String applicationName = jobNameList[0];
+		String jobName = jobNameList[1];
+
+		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
+			jobName);
+
+		//更新
+		if(null != jobCoreConfiguration){
+			jobCoreConfigurationDto.setDescription(jobCoreConfiguration.getDescription());
+			jobCoreConfigurationDto.setCron(jobCoreConfiguration.getCron());
+			jobCoreConfigurationDto.setJobParameter(jobCoreConfiguration.getJobParameter());
+			jobCoreConfigurationDto.setFailover(jobCoreConfiguration.isFailover());
+			jobCoreConfigurationDto.setMisfire(jobCoreConfiguration.isMisfire());
+			jobCoreConfigurationDto.setShardingItemParameters(jobCoreConfiguration.getShardingItemParameters());
+			jobCoreConfigurationDto.setShardingTotalCount(jobCoreConfiguration.getShardingTotalCount());
+			jobCoreConfigurationService.edit(jobCoreConfigurationDto);
+		}
+	}
+
 }

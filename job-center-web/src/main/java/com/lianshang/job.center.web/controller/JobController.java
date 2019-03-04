@@ -1,5 +1,7 @@
 package com.lianshang.job.center.web.controller;
 
+import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.lianshang.job.center.web.controller.request.JobInfo;
 import com.lianshang.job.center.web.controller.response.JobResponse;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
@@ -66,8 +68,9 @@ public class JobController {
 			if(JobType.SIMPLE_JOB.code().equals(jobInfo.getJobType())) {
 				JobUtil.initSimpleJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
 			} else if(JobType.DATA_FLOW_JOB.code().equals(jobInfo.getJobType())) {
-				JobUtil.initDataflowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+				JobUtil.initDataFlowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
 			}
+
 		}
 		return JobResponse.success();
 	}
@@ -104,5 +107,18 @@ public class JobController {
 		jobCoreConfigurationService.save(jobCoreConfigurationDto);
 
 		return jobCoreConfigurationDto.getId();
+	}
+
+	public static class MyElasticJobListener implements ElasticJobListener{
+
+		@Override
+		public void beforeJobExecuted(ShardingContexts shardingContexts) {
+
+		}
+
+		@Override
+		public void afterJobExecuted(ShardingContexts shardingContexts) {
+
+		}
 	}
 }

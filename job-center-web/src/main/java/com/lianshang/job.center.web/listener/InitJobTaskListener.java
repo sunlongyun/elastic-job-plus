@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 public class InitJobTaskListener implements ApplicationListener {
 
 	private static final String ROOT_TAG = "application-1";
-
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
 		if(event instanceof ContextRefreshedEvent) {
@@ -35,6 +34,7 @@ public class InitJobTaskListener implements ApplicationListener {
 				log.info("应用初始化完成-------");
 				jobCoreConfigurationService.getAllList().forEach(this::initJob);
 			}
+
 		}
 	}
 
@@ -50,9 +50,8 @@ public class InitJobTaskListener implements ApplicationListener {
 		if(JobType.SIMPLE_JOB.code().equals(jobCoreConfigurationDto.getJobType())) {
 			JobUtil.initSimpleJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
 		} else if(JobType.DATA_FLOW_JOB.code().equals(jobCoreConfigurationDto.getJobType())) {
-			JobUtil.initDataflowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+			JobUtil.initDataFlowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
 		}
-
 	}
 
 }

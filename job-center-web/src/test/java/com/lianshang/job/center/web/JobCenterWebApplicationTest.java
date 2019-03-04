@@ -4,6 +4,7 @@ import com.lianshang.job.center.web.dto.NameSpaceConfigurationDto;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.service.NameSpaceConfigurationService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.zookeeper.ZooKeeper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class JobCenterWebApplicationTest {
 	private NameSpaceConfigurationService nameSpaceConfigurationService;
 	@Autowired
 	private JobCoreConfigurationService jobCoreConfigurationService;
+	@Autowired
+	private ZooKeeper zooKeeper;
 	@Test
 	public void test1() {
 		NameSpaceConfigurationDto zookeeperConfigurationDto = new NameSpaceConfigurationDto();
@@ -43,5 +46,13 @@ public class JobCenterWebApplicationTest {
 	@Test
 	public void test3(){
 		jobCoreConfigurationService.getAllList().forEach(System.out::println);
+	}
+
+	/**
+	 * 客户端
+	 */
+	@Test
+	public void test4() {
+		log.info("zoo=>{}", zooKeeper);
 	}
 }
