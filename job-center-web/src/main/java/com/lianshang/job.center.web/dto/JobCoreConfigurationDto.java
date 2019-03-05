@@ -49,6 +49,10 @@ public class JobCoreConfigurationDto {
 	 */
 	private Boolean misfire = false;
 	/**
+	 * 是否开启事件追踪
+	 */
+	private Boolean eventLog = false;
+	/**
 	 * 任务所在应用名称(Eureka 上应用名称)
 	 */
 	private String applicationName;

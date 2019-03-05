@@ -18,13 +18,14 @@
     <result property="createTime" column="create_time" javaType="java.util.Date"/>
     <result property="updateTime" column="update_time" javaType="java.util.Date"/>
     <result property="description" column="description"/>
+    <result property="eventLog" column="event_log"/>
     <result property="validity" column="validity"/>
   </resultMap>
 
 
   <sql id="Base_Column_List">
     id,job_name,cron,sharding_total_count,sharding_item_parameters,namespace_id,
-    job_parameter,job_type,`failover`,`misfire`,
+    job_parameter,job_type,`failover`,`misfire`,event_log,
     application_name,create_time,update_time,description,validity
   </sql>
 
@@ -38,6 +39,7 @@
       namespace_id,
       job_parameter,
       job_type,
+      event_log,
       `failover`,
       `misfire`,
       application_name,
@@ -52,6 +54,7 @@
         #{namespaceId},
         #{jobParameter},
         #{jobType},
+        #{eventLog},
         #{failover},
         #{misfire},
         #{applicationName},

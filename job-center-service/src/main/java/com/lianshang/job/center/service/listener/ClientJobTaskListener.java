@@ -1,5 +1,6 @@
-package com.lianshang.job.center.service.config;
+package com.lianshang.job.center.service.listener;
 
+import com.lianshang.job.center.service.annotation.EnableEventLog;
 import com.lianshang.job.center.service.jobTaskInterface.DataFlowJob;
 import com.lianshang.job.center.service.jobTaskInterface.SimpleJob;
 import com.lianshang.job.center.service.response.LsCloudResponse;
@@ -70,7 +71,9 @@ public class ClientJobTaskListener implements ApplicationListener {
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+
 		if(event instanceof ContextRefreshedEvent) {
+
 			ContextRefreshedEvent contextRefreshedEvent = (ContextRefreshedEvent) event;
 			ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
 			log.info("applicationContext=>{}", applicationContext);
@@ -107,9 +110,17 @@ public class ClientJobTaskListener implements ApplicationListener {
 		postParameters.put("jobName", jobName);
 		postParameters.put("jobType", JobType.SIMPLE_JOB.code);
 
+		EnableEventLog enableEventLog = simpleJob.getClass().getAnnotation(EnableEventLog.class);
+		if(null != enableEventLog) {
+			postParameters.put("eventLog", true);
+		} else {
+			postParameters.put("eventLog", false);
+		}
+
 		if(log.isDebugEnabled()) {
 			log.debug("postParameters==>{}", postParameters);
 		}
+
 		sendPostMsg(postParameters);
 	}
 
@@ -123,6 +134,14 @@ public class ClientJobTaskListener implements ApplicationListener {
 		postParameters.put("jobName", jobName);
 		postParameters.put("jobType", JobType.DATA_FLOW_JOB.code);
 
+		EnableEventLog enableEventLog = dataFlowJob.getClass().getAnnotation(EnableEventLog.class);
+		if(null != enableEventLog) {
+			postParameters.put("eventLog", true);
+		} else {
+			postParameters.put("eventLog", false);
+		}
+
+
 		if(log.isDebugEnabled()) {
 			log.debug("postParameters==>{}", postParameters);
 		}
@@ -134,6 +153,29 @@ public class ClientJobTaskListener implements ApplicationListener {
 	 * 发送消息
 	 */
 	private void sendPostMsg(Map<String, Object> postParameters) {
+
+		HttpEntity<String> formEntity = getStringHttpEntity(postParameters);
+
+		try {
+
+			LsCloudResponse lsCloudResponse = restTemplate
+				.postForEntity(JOB_SERVER_URL, formEntity, LsCloudResponse.class).getBody();
+
+			if(!ResponseCodeEnum.SUCCESS.code().equals(lsCloudResponse.getCode())) {
+				throw new RuntimeException(lsCloudResponse.getMsg());
+			}
+
+		} catch(Exception ex) {
+			log.error("远程服务调用失败:", ex);
+		}
+	}
+
+	/**
+	 * 组装请求实体
+	 * @param postParameters
+	 * @return
+	 */
+	private HttpEntity<String> getStringHttpEntity(Map<String, Object> postParameters) {
 		HttpHeaders headers = new HttpHeaders();
 		MediaType mediaType = MediaType.parseMediaType("application/json; charset=UTF-8");
 		headers.setContentType(mediaType);
@@ -141,14 +183,7 @@ public class ClientJobTaskListener implements ApplicationListener {
 
 		String paramsJson = JsonUtils.object2JsonString(postParameters);
 
-		HttpEntity<String> formEntity = new HttpEntity<String>(paramsJson, headers);
-
-		LsCloudResponse lsCloudResponse = restTemplate.postForEntity(JOB_SERVER_URL, formEntity, LsCloudResponse.class)
-			.getBody();
-
-		if(!ResponseCodeEnum.SUCCESS.code().equals(lsCloudResponse.getCode())) {
-			throw new RuntimeException(lsCloudResponse.getMsg());
-		}
+		return new HttpEntity<String>(paramsJson, headers);
 	}
 
 	/**

@@ -23,4 +23,8 @@ public class JobInfo {
 	 * 任务类型
 	 */
 	private String jobType;
+	/**
+	 * 是否开启事件追踪
+	 */
+	private Boolean eventLog = false;
 }

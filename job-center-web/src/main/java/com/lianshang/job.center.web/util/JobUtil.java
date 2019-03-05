@@ -30,6 +30,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class JobUtil implements ApplicationContextAware {
 
+	public static final String SPLIT_ = "___";
+
 	private static NameSpaceConfigurationService nameSpaceConfigurationService;
 	private static JobCoreConfigurationService jobCoreConfigurationService = null;
 	private static DataSource dataSource = null;
@@ -55,10 +57,29 @@ public class JobUtil implements ApplicationContextAware {
 				.getCoordinatorRegistryCenter();
 		}
 
-		// 定义日志数据库事件溯源配置
-		JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+		//构建任务调度job
+		buildJobScheduler(jobCoreConfigurationDto, simpleJobRootConfig, coordinatorRegistryCenter);
+	}
 
-		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig).init();
+	/**
+	 * 构建任务调度job
+	 */
+	private static void buildJobScheduler(JobCoreConfigurationDto jobCoreConfigurationDto,
+		LiteJobConfiguration simpleJobRootConfig, CoordinatorRegistryCenter coordinatorRegistryCenter) {
+
+		try {
+			// 定义日志数据库事件溯源配置
+			JobEventConfiguration jobEventRdbConfig = null;
+			if(Boolean.TRUE.equals(jobCoreConfigurationDto.getEventLog())) {
+				jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+				new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig).init();
+			} else {
+				new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig).init();
+			}
+		} catch(Exception ex) {
+			log.info("error:{}", ex);
+		}
+
 	}
 
 
@@ -75,7 +96,7 @@ public class JobUtil implements ApplicationContextAware {
 			MyDataFlowJob.class.getCanonicalName(), jobCoreConfigurationDto.getStreamingProcess());
 
 		// 定义Lite作业根配置
-		LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfiguration).build();
+		LiteJobConfiguration dataFlowJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfiguration).build();
 
 		CoordinatorRegistryCenter coordinatorRegistryCenter = null;
 
@@ -84,10 +105,8 @@ public class JobUtil implements ApplicationContextAware {
 				.getCoordinatorRegistryCenter();
 		}
 
-		// 定义日志数据库事件溯源配置
-		JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
-
-		new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig).init();
+		//构建任务调度job
+		buildJobScheduler(jobCoreConfigurationDto, dataFlowJobRootConfig, coordinatorRegistryCenter);
 	}
 
 	/**
@@ -117,8 +136,7 @@ public class JobUtil implements ApplicationContextAware {
 	 */
 	public static void freshJobItem(JobCoreConfiguration jobCoreConfiguration) {
 
-
-			String[] jobNameList = jobCoreConfiguration.getJobName().split("___");
+		String[] jobNameList = jobCoreConfiguration.getJobName().split(SPLIT_);
 			String applicationName = jobNameList[0];
 			String jobName = jobNameList[1];
 
@@ -130,13 +148,30 @@ public class JobUtil implements ApplicationContextAware {
 	}
 
 	/**
+	 * 设置为无效
+	 * @param jobCoreConfiguration
+	 */
+	public static void disabledJobItem(JobCoreConfiguration jobCoreConfiguration) {
+		String[] jobNameList = jobCoreConfiguration.getJobName().split(SPLIT_);
+		String applicationName = jobNameList[0];
+		String jobName = jobNameList[1];
+
+		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
+			jobName);
+		jobCoreConfigurationDto.setValidity(false);
+		jobCoreConfigurationService.edit(jobCoreConfigurationDto);
+	}
+
+	/**
 	 * 根据job记录
 	 * @param jobCoreConfiguration
 	 * @param jobCoreConfigurationDto
 	 */
 	private static void editJob(JobCoreConfiguration jobCoreConfiguration,
 		JobCoreConfigurationDto jobCoreConfigurationDto) {
+
 		if(null != jobCoreConfiguration) {
+
 			jobCoreConfigurationDto.setDescription(jobCoreConfiguration.getDescription());
 			jobCoreConfigurationDto.setCron(jobCoreConfiguration.getCron());
 			jobCoreConfigurationDto.setJobParameter(jobCoreConfiguration.getJobParameter());
@@ -144,7 +179,9 @@ public class JobUtil implements ApplicationContextAware {
 			jobCoreConfigurationDto.setMisfire(jobCoreConfiguration.isMisfire());
 			jobCoreConfigurationDto.setShardingItemParameters(jobCoreConfiguration.getShardingItemParameters());
 			jobCoreConfigurationDto.setShardingTotalCount(jobCoreConfiguration.getShardingTotalCount());
+			jobCoreConfigurationDto.setValidity(true);
 			jobCoreConfigurationService.edit(jobCoreConfigurationDto);
+
 		}
 	}
 

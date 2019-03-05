@@ -29,7 +29,7 @@ public class JobController {
 	/**
 	 * 默认执行时间
 	 */
-	public static final String DEFAULT_CRON = "0 * * 31 12 ?";
+	public static final String DEFAULT_CRON = "0 0 0 1 1 ? 2050";
 	@Autowired
 	private NameSpaceConfigurationService nameSpaceConfigurationService;
 	@Autowired
@@ -46,8 +46,21 @@ public class JobController {
 	@RequestMapping("/jobNotify")
 	public JobResponse jobNotify(@RequestBody JobInfo jobInfo) {
 
+		//获取任务job,不存在,则进行创建
+		JobCoreConfigurationDto jobCoreConfigurationDto = getJobCoreConfigurationDto(jobInfo);
 
-			NameSpaceConfigurationDto spaceConfigurationDto = nameSpaceConfigurationService.getByName(jobInfo
+		//开启任务
+		if(JobType.SIMPLE_JOB.code().equals(jobInfo.getJobType())) {
+			JobUtil.initSimpleJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+		} else if(JobType.DATA_FLOW_JOB.code().equals(jobInfo.getJobType())) {
+			JobUtil.initDataFlowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
+		}
+
+		return JobResponse.success();
+	}
+
+	private JobCoreConfigurationDto getJobCoreConfigurationDto(@RequestBody JobInfo jobInfo) {
+		NameSpaceConfigurationDto spaceConfigurationDto = nameSpaceConfigurationService.getByName(jobInfo
 				.getNamespace());
 
 		if(spaceConfigurationDto == null) {//命名空间不存在,则创建
@@ -58,37 +71,26 @@ public class JobController {
 			spaceConfigurationDto = nameSpaceConfigurationService.getById(spaceConfigurationDto.getId());
 		}
 
-			//查看job是否存在
-			JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService
-				.getByName(spaceConfigurationDto.getNameSpace(), jobInfo.getJobName());
+		//查看job是否存在
+		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService
+			.getByName(spaceConfigurationDto.getNameSpace(), jobInfo.getJobName());
 
-			//如果不存在,则创建
+		//如果不存在,则创建
 		Integer jobId = createJobIfNotExist(jobInfo, spaceConfigurationDto, jobCoreConfigurationDto);
-
 		jobCoreConfigurationDto = jobCoreConfigurationService.getById(jobId);
-
 		if(!jobCoreConfigurationDto.isValidity()) {//无效的更新为有效
 			jobCoreConfigurationDto.setValidity(true);
 			jobCoreConfigurationService.edit(jobCoreConfigurationDto);
 		}
-
-		return JobResponse.success();
+		return jobCoreConfigurationDto;
 	}
+
 	//如果job不存在则创建job
 	private int createJobIfNotExist(@RequestBody JobInfo jobInfo, NameSpaceConfigurationDto spaceConfigurationDto,
 		JobCoreConfigurationDto jobCoreConfigurationDto) {
 
 		if(null == jobCoreConfigurationDto) {//job不存在,创建job
-
 			Integer jobId = saveJob(jobInfo, spaceConfigurationDto.getId());
-			jobCoreConfigurationDto = jobCoreConfigurationService.getById(jobId);
-			//开启任务
-			if(JobType.SIMPLE_JOB.code().equals(jobInfo.getJobType())) {
-				JobUtil.initSimpleJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
-			} else if(JobType.DATA_FLOW_JOB.code().equals(jobInfo.getJobType())) {
-				JobUtil.initDataFlowJob(jobCoreConfigurationDto, jobCoreConfigurationDto.getNamespaceId());
-			}
-
 			return jobId;
 		}
 		return jobCoreConfigurationDto.getId();
@@ -122,6 +124,7 @@ public class JobController {
 		jobCoreConfigurationDto.setDescription(jobInfo.getNamespace() + "/" + jobInfo.getJobName());
 		jobCoreConfigurationDto.setJobType(jobInfo.getJobType());
 		jobCoreConfigurationDto.setNamespaceId(namespaceId);
+		jobCoreConfigurationDto.setEventLog(jobInfo.getEventLog());
 
 		jobCoreConfigurationService.save(jobCoreConfigurationDto);
 

@@ -2,7 +2,7 @@ package com.lianshang.job.center.service.controller;
 
 import com.lianshang.job.center.service.beans.ProcessDataInfo;
 import com.lianshang.job.center.service.beans.ShardInfo;
-import com.lianshang.job.center.service.config.ClientJobTaskListener;
+import com.lianshang.job.center.service.listener.ClientJobTaskListener;
 import com.lianshang.job.center.service.jobTaskInterface.DataFlowJob;
 import com.lianshang.job.center.service.jobTaskInterface.SimpleJob;
 import com.lianshang.job.center.service.response.LsCloudResponse;

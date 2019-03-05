@@ -41,6 +41,10 @@ public class JobCoreConfiguration {
 	 */
 	private Boolean streamingProcess = false;
 	/**
+	 * 是否开启事件追踪
+	 */
+	private Boolean eventLog = false;
+	/**
 	 * 分片参数化
 	 */
 	private String shardingItemParameters;
