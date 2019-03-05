@@ -4,19 +4,9 @@ import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto.JobType;
 import com.lianshang.job.center.web.service.JobCoreConfigurationService;
 import com.lianshang.job.center.web.util.JobUtil;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -37,10 +27,6 @@ import org.springframework.stereotype.Component;
 public class InitJobTaskListener implements ApplicationListener, ApplicationContextAware {
 
 	private static final String ROOT_TAG = "application-1";
-	public static final String JOB_CORE_CONFIGURATION = "job_core_configuration";
-	public static final String NAMESPACE_CONFIGURATION = "namespace_configuration";
-
-	private static DataSource dataSource;
 
 	@Autowired
 	private JobCoreConfigurationService jobCoreConfigurationService;
@@ -77,6 +63,5 @@ public class InitJobTaskListener implements ApplicationListener, ApplicationCont
 		if(null == dataSourceMap || dataSourceMap.isEmpty()) {
 			throw new RuntimeException("未找到合适的数据源");
 		}
-		dataSource = dataSourceMap.values().iterator().next();
 	}
 }
