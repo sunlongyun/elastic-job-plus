@@ -55,4 +55,6 @@ public class JobCenterWebApplicationTest {
 	public void test4() {
 		log.info("zoo=>{}", zooKeeper);
 	}
+
+
 }

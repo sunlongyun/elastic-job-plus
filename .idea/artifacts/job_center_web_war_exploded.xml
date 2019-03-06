@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="job-center-web:war exploded">
-    <output-path>$PROJECT_DIR$/job-center-web/target/job-center-web-0.0.1-SNAPSHOT</output-path>
+    <output-path>$PROJECT_DIR$/job-center-web/target/job-center-web-0.0.1</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -63,7 +63,7 @@
           <element id="library" level="project" name="Maven: com.alibaba:druid:1.1.10" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
           <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.0.6.RELEASE" />
-          <element id="archive" name="job-center-service-0.0.1-SNAPSHOT.jar">
+          <element id="archive" name="job-center-service-0.0.1.jar">
             <element id="module-output" name="job-center-service" />
           </element>
           <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2" />
@@ -175,7 +175,7 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/job-center-web/target/job-center-web-0.0.1-SNAPSHOT/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/job-center-web/target/job-center-web-0.0.1/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="job-center-web/web/Web" />
     </root>
