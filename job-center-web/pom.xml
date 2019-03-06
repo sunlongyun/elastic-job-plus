@@ -5,7 +5,7 @@
 
   <groupId>com.lianshang</groupId>
   <artifactId>job-center-web</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <name>job-center-web</name>
 
   <parent>
