@@ -51,7 +51,7 @@ public class JobCoreConfigurationServiceImpl implements JobCoreConfigurationServ
 
 	@Override
 	public JobCoreConfigurationDto getByName(String applicationName, String jobName) {
-		JobCoreConfiguration jobCoreConfiguration = jobCoreConfigurationMapper.getByName(applicationName, jobName);
+		JobCoreConfiguration jobCoreConfiguration = jobCoreConfigurationMapper.getByNameSpaceAndName(applicationName, jobName);
 		return entityToDto(jobCoreConfiguration);
 	}
 

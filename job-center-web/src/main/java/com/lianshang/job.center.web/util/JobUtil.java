@@ -137,29 +137,33 @@ public class JobUtil implements ApplicationContextAware {
 	public static void freshJobItem(JobCoreConfiguration jobCoreConfiguration) {
 
 		String[] jobNameList = jobCoreConfiguration.getJobName().split(SPLIT_);
-			String applicationName = jobNameList[0];
-			String jobName = jobNameList[1];
-
-			JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
-				jobName);
-
-			//更新
-			editJob(jobCoreConfiguration, jobCoreConfigurationDto);
-	}
-
-	/**
-	 * 设置为无效
-	 * @param jobCoreConfiguration
-	 */
-	public static void disabledJobItem(JobCoreConfiguration jobCoreConfiguration) {
-		String[] jobNameList = jobCoreConfiguration.getJobName().split(SPLIT_);
 		String applicationName = jobNameList[0];
 		String jobName = jobNameList[1];
 
 		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
 			jobName);
-		jobCoreConfigurationDto.setValidity(false);
-		jobCoreConfigurationService.edit(jobCoreConfigurationDto);
+
+		//更新
+		editJob(jobCoreConfiguration, jobCoreConfigurationDto);
+	}
+
+	/**
+	 * 根据命名空间和job名称删除job(逻辑删除)
+	 */
+	public static void disableJob(String fullJobName) {
+
+		String[] jobNameList = fullJobName.split(SPLIT_);
+		String applicationName = jobNameList[0];
+		String jobName = jobNameList[1];
+
+		JobCoreConfigurationDto jobCoreConfigurationDto = jobCoreConfigurationService.getByName(applicationName,
+			jobName);
+
+		JobCoreConfigurationDto targetCoreConfigurationDto = new JobCoreConfigurationDto();
+		targetCoreConfigurationDto.setId(jobCoreConfigurationDto.getId());
+		targetCoreConfigurationDto.setValidity(false);
+
+		jobCoreConfigurationService.edit(targetCoreConfigurationDto);
 	}
 
 	/**

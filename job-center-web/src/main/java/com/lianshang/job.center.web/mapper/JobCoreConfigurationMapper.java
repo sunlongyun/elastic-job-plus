@@ -27,7 +27,7 @@ public interface JobCoreConfigurationMapper {
 	/**
 	 * 根据job名字查询
 	 */
-	public JobCoreConfiguration getByName(@Param("applicationName") String applicationName,
+	public JobCoreConfiguration getByNameSpaceAndName(@Param("applicationName") String applicationName,
 		@Param("jobName") String jobName);
 
 	/**

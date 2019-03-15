@@ -105,11 +105,11 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM job_core_configuration
-    WHERE id = #{id} and validity = 1
+    WHERE id = #{id}
   </select>
 
   <!-- 根据名称查询-->
-  <select id="getByName" resultMap="BaseResultMap">
+  <select id="getByNameSpaceAndName" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
     FROM job_core_configuration
