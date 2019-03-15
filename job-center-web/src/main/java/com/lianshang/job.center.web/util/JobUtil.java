@@ -7,6 +7,8 @@ import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.lianshang.job.center.web.dto.JobCoreConfigurationDto;
 import com.lianshang.job.center.web.job.MyDataFlowJob;
@@ -68,14 +70,30 @@ public class JobUtil implements ApplicationContextAware {
 		LiteJobConfiguration simpleJobRootConfig, CoordinatorRegistryCenter coordinatorRegistryCenter) {
 
 		try {
+			JobScheduler jobScheduler = null;
 			// 定义日志数据库事件溯源配置
 			JobEventConfiguration jobEventRdbConfig = null;
 			if(Boolean.TRUE.equals(jobCoreConfigurationDto.getEventLog())) {
 				jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
-				new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig).init();
+				jobScheduler = new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig, jobEventRdbConfig);
 			} else {
-				new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig).init();
+				jobScheduler = new JobScheduler(coordinatorRegistryCenter, simpleJobRootConfig);
 			}
+
+			jobScheduler.init();
+
+			JobRegistry jobRegistry = JobRegistry.getInstance();
+			if(null != jobRegistry) {
+				JobScheduleController jobScheduleController = jobRegistry.getJobScheduleController
+					(simpleJobRootConfig.getJobName());
+
+				if(null != jobScheduleController){
+					jobScheduleController.rescheduleJob
+						(jobCoreConfigurationDto.getCron());
+				}
+			}
+
+
 		} catch(Exception ex) {
 			log.info("error:{}", ex);
 		}
@@ -116,12 +134,13 @@ public class JobUtil implements ApplicationContextAware {
 		String jobName) {
 		log.info("description==>{}", jobCoreConfigurationDto.getDescription());
 		// 定义作业核心配置
-		return JobCoreConfiguration
+		JobCoreConfiguration jobCoreConfiguration = JobCoreConfiguration
 			.newBuilder(jobName, jobCoreConfigurationDto.getCron(),
 				jobCoreConfigurationDto.getShardingTotalCount()).description(jobCoreConfigurationDto.getDescription())
 			.failover(jobCoreConfigurationDto.getFailover()).jobParameter(jobCoreConfigurationDto.getJobParameter())
 			.misfire(jobCoreConfigurationDto.getMisfire())
 			.shardingItemParameters(jobCoreConfigurationDto.getShardingItemParameters()).build();
+		return jobCoreConfiguration;
 	}
 
 	@Override
