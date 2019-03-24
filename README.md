@@ -73,9 +73,12 @@ public class MyJob implements DataFlowJob<T> {
 例如:
 
 @Component
+
 @EnableEventLog
+
 @Slf4j
 public class MyJob implements SimpleJob {
+
 ......
 }
 
