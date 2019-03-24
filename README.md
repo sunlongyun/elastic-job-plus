@@ -2,10 +2,6 @@
 基于elasticjob和springcloud开发的一块分布式定时任务，实现定时任务和业务的解耦
 
 
-定时任务调度器使用说明书
-
-Copyright (c) 2019 basic-component
-
 该项目是一款基于当当的elastic-job进行升级的定时任务调度产品.项目创建的目的旨在实现任务调度工作和业务逻辑解耦,提供程序员工作效率.
 
 
@@ -23,7 +19,7 @@ Copyright (c) 2019 basic-component
 
 二.使用说明
 
-1.引入pom
+1.引入pom(暂时需要先下载项目后install)
   <dependency>
     <groupId>com.lianshang</groupId>
     <artifactId>job-center-service</artifactId>
