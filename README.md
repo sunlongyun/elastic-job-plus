@@ -39,10 +39,15 @@
 
 4.install 项目job-center-service成jar包
 5.引入pom
+
   <dependency>
+  
     <groupId>com.lianshang</groupId>
+    
     <artifactId>job-center-service</artifactId>
+    
     <version>0.0.1</version>
+    
   </dependency>
 
 6.继承接口实现业务逻辑
