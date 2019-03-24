@@ -22,7 +22,8 @@
 
 三.使用说明
 
-######################################服务端配置#################################################################
+######################################服务端配置#################################
+
 1.由于elastic-job是基于zookeeper开发的，在使用之前，首先要创建zookeeper集群，然后修改job-center-web 中的resource目录下的application.properties文件中zookeeper配置中心。
 
 2.该项目是基于springcloud做的任务的上报和调度，所以使用之前必须先搭建eureka注册中心，然后修改job-center-web 中的resource目录下的application.properties文件中eureka地址。
