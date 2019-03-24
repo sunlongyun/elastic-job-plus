@@ -25,7 +25,6 @@
     <elastic.job.version>2.1.5</elastic.job.version>
     <mysql-connector.version>8.0.15</mysql-connector.version>
     <job-center.version>0.0.1</job-center.version>
-    <apollo-client.version>1.1.2</apollo-client.version>
     <curator-client.version>${curator-framework.version}</curator-client.version>
     <curator-framework.version>2.10.0</curator-framework.version>
   </properties>
@@ -60,11 +59,6 @@
       <groupId>com.lianshang</groupId>
       <artifactId>job-center-service</artifactId>
       <version>${job-center.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ctrip.framework.apollo</groupId>
-      <artifactId>apollo-client</artifactId>
-      <version>${apollo-client.version}</version>
     </dependency>
 
     <!--mybatis-->

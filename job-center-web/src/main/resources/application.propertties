@@ -1,0 +1,12 @@
+eureka.client.serviceUrl.defaultZone = http://172.16.2.67:8080/eureka/
+eureka.client.register-with-eureka = true
+eureka.client.fetch-registry = true
+zookeepr.serverLists = zk01.lian-shang.cn:2181,zk02.lian-shang.cn:2181,zk03.lian-shang.cn:2181
+
+mybatis.mapperLocations = classpath*:mapper/*.xml
+
+
+spring.datasource.url = jdbc:mysql://mysqldev.lsfash.cn:3307/es_job?useUnicode=true&characterEncoding=utf8
+spring.datasource.username = lsdev
+spring.datasource.password = hcblihiNRqiy58rp
+spring.datasource.driverClassName = com.mysql.cj.jdbc.Driver
