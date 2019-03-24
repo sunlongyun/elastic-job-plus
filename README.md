@@ -43,8 +43,11 @@
 6.继承接口实现业务逻辑
 
 //简单任务类型
+
 @Component
+
 public class MyJob implements SimpleJob {
+
   .........
 }
 
@@ -52,6 +55,7 @@ public class MyJob implements SimpleJob {
 //流式任务类型
 
 @Component
+
 public class MyJob implements DataFlowJob<T> {
   .........
 }
