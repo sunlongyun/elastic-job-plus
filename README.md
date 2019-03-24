@@ -54,11 +54,6 @@ public class MyJob implements DataFlowJob<T> {
   .........
 }
 
-3.该项目是elastic-job的升级版，旨在进一步提高工作效率，保留了全部elastic-job的原生功能。管理后台仍然使用部elastic-job提供的管理后台。
-elastic-job官网地址 http://elasticjob.io/
-
-
-
 3.通过 当当的elastic-job管理后台修改任务执行时间,分片等内容
 
 默认注册的任务执行时间是2050年(为了注册任务后不立即执行,并且任务是激活状态).
