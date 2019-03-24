@@ -73,3 +73,8 @@ public class MyJob implements SimpleJob {
   当数据库的job配置信息和注册中心不一致时,下次重启服务器时会以数据库配置信息为准.
 
 2.修改任务配置信息后,无需重启任何服务器,任务自动按照新的配置信息执行.
+
+3.该项目是在当当elastic-job分布式定时任务基础上的升级版，只是简化了使用的复杂度，提高了程序员的开发效率。管理后台仍然使用elastic-job的管理后台来管理定时任务。 elastic-jo官网地址：http://elasticjob.io/
+
+
+
