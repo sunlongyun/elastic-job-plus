@@ -28,7 +28,10 @@
 
 2.该项目是基于springcloud做的任务的上报和调度，所以使用之前必须先搭建eureka注册中心，然后修改job-center-web 中的resource目录下的application.properties文件中eureka地址。
 
-3.install 项目  job-center-web 成war包，然后发布服务。
+3.数据库sql。在自己的数据库中执行job-center-web项目根目录下的sql_file/job.sql 。修改application.properties中的数据源配置。
+
+4.install 项目  job-center-web 成war包，然后发布服务。
+
 
 #########################客户端配置############################################
 
