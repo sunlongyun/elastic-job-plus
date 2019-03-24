@@ -50,6 +50,7 @@ public class MyJob implements SimpleJob {
 
 
 //流式任务类型
+
 @Component
 public class MyJob implements DataFlowJob<T> {
   .........
@@ -66,6 +67,7 @@ public class MyJob implements DataFlowJob<T> {
 如果业务需要追踪任务执行情况,请在处理任务的bean上添加注解@EnableEventLog
 
 例如:
+
 @Component
 @EnableEventLog
 @Slf4j
