@@ -1,4 +1,7 @@
 # elastic-job-plus
+
+Build Status Maven Central Gitter Chat
+
 基于elasticjob和springcloud开发的一块分布式定时任务，实现定时任务和业务的解耦
 
 
