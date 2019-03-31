@@ -1,8 +1,10 @@
 # elastic-job-plus
+
+
 基于elasticjob和springcloud开发的一块分布式定时任务，实现定时任务和业务的解耦
 
 
-该项目是一款基于当当的elastic-job进行升级的定时任务调度产品.项目创建的目的旨在实现任务调度工作和业务逻辑解耦,提供程序员工作效率.
+该项目是一款基于当当的elastic-job进行升级的定时任务调度产品.项目创建的目的旨在实现任务调度工作和业务逻辑解耦,提高程序员工作效率.
 
 
 
@@ -15,37 +17,58 @@
 3.通过elastic-job 管理后台对任务进行的任何修改操作,会实时刷新到数据库,保证配置信息的安全.
   定时任务调度器重启之后,用数据库的job配置信息初始化(或者刷新)任务的调度配置,不会出现恢复到项目原始配置的情况.
 
+二.项目结构说明
+项目分为两个子模块 job-center-web和job-center-service
+ 1.job-center-web打包成war单独部署，是任务调度服务中心，部署多个节点可以实现任务的高可用。 job-center-web是elastic-job执行任务的节点。
+ 2.job-center-service打包成jar，共基于springcloud开发的业务端使用。提供了两种接口SimpleJob和DataFlowJob，实现接口，完成业务逻辑。任务可自动上报给job-center-web。
+
+三.使用说明
+
+######################################服务端配置#################################
+
+1.由于elastic-job是基于zookeeper开发的，在使用之前，首先要创建zookeeper集群，然后修改job-center-web 中的resource目录下的application.properties文件中zookeeper配置中心。
+
+2.该项目是基于springcloud做的任务的上报和调度，所以使用之前必须先搭建eureka注册中心，然后修改job-center-web 中的resource目录下的application.properties文件中eureka地址。
+
+3.数据库sql。在自己的数据库中执行job-center-web项目根目录下的sql_file/job.sql 。修改application.properties中的数据源配置。
+
+4.install 项目  job-center-web 成war包，然后发布服务。
 
 
-二.使用说明
+#########################客户端配置############################################
 
-1.引入pom(暂时需要先下载项目后install)
+4.install 项目job-center-service成jar包
+5.引入pom
+
   <dependency>
+  
     <groupId>com.lianshang</groupId>
+    
     <artifactId>job-center-service</artifactId>
+    
     <version>0.0.1</version>
+    
   </dependency>
 
-
-2.继承接口实现业务逻辑
+6.继承接口实现业务逻辑
 
 //简单任务类型
+
 @Component
+
 public class MyJob implements SimpleJob {
+
   .........
 }
 
 
 //流式任务类型
+
 @Component
+
 public class MyJob implements DataFlowJob<T> {
   .........
 }
-
-3.该项目是elastic-job的升级版，旨在进一步提高工作效率，保留了全部elastic-job的原生功能。管理后台仍然使用部elastic-job提供的管理后台。
-elastic-job官网地址 http://elasticjob.io/
-
-
 
 3.通过 当当的elastic-job管理后台修改任务执行时间,分片等内容
 
@@ -58,15 +81,19 @@ elastic-job官网地址 http://elasticjob.io/
 如果业务需要追踪任务执行情况,请在处理任务的bean上添加注解@EnableEventLog
 
 例如:
+
 @Component
+
 @EnableEventLog
+
 @Slf4j
 public class MyJob implements SimpleJob {
+
 ......
 }
 
 
-三.注意事项
+四.注意事项
 
 1.修改任务的配置信心,尽量通过当当的elastic-job管理后台.
   如果直接修改数据库,可能会导致数据库里的job配置信息和注册中心不一致.
